@@ -17,6 +17,8 @@
   .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
   .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
   .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Helvetica Neue', sans-serif; }
+  .nav button.on-dark { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.45); }
+  .nav button.on-dark:hover { border-color: rgba(255,255,255,0.8); color: rgba(255,255,255,0.9); }
   .nav button:hover { border-color: var(--navy); color: var(--navy); }
   .eyebrow { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.6rem; font-weight: 600; }
   .slide.dark .eyebrow { color: rgba(255,255,255,0.45); }
@@ -260,7 +262,7 @@
   const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
   function show(n) { slides[cur].classList.remove('active'); cur = (n+total)%total; slides[cur].classList.add('active'); document.getElementById('progress').style.width=((cur+1)/total*100)+'%'; document.getElementById('counter').textContent=(cur+1)+' / '+total; updateBackLink(); }
   function go(d) { show(cur+d); }
-  function updateBackLink() { var isDark = slides[cur].classList.contains("dark"); var link = document.getElementById("back-link"); link.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; link.onmouseover = function(){ this.style.color = isDark ? "rgba(255,255,255,0.8)" : "#1a3a6b"; }; link.onmouseout = function(){ this.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; }; }
+  function updateBackLink() { var isDark = slides[cur].classList.contains("dark"); var link = document.getElementById("back-link"); link.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; link.onmouseover = function(){ this.style.color = isDark ? "rgba(255,255,255,0.8)" : "#1a3a6b"; }; link.onmouseout = function(){ this.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; }; document.querySelectorAll(".nav button").forEach(function(btn){ if(isDark){ btn.classList.add("on-dark"); } else { btn.classList.remove("on-dark"); } }); }
   document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key===' ')go(1); if(e.key==='ArrowLeft')go(-1); });
   let tx=0; document.addEventListener('touchstart',e=>tx=e.touches[0].clientX); document.addEventListener('touchend',e=>{ const dx=tx-e.changedTouches[0].clientX; if(Math.abs(dx)>40)go(dx>0?1:-1); });
   show(0); updateBackLink();
