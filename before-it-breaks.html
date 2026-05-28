@@ -8,19 +8,23 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --black: #0a0a0a;
-    --white: #fafafa;
-    --accent: #c8a96e;
-    --muted: #6b6b6b;
-    --surface: #141414;
-    --border: #2a2a2a;
+    --navy: #1a3a6b;
+    --navy-dark: #0f2347;
+    --navy-mid: #2a4f8a;
+    --navy-light: #e8eef7;
+    --white: #ffffff;
+    --offwhite: #f7f8fa;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #dde3ed;
+    --accent: #1a3a6b;
   }
 
   html { font-size: 18px; }
 
   body {
-    background: var(--black);
-    color: var(--white);
+    background: var(--white);
+    color: var(--text);
     font-family: 'Georgia', serif;
     overflow: hidden;
     height: 100vh;
@@ -44,12 +48,18 @@
     padding: 8vh 10vw;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.35s ease;
+    background: var(--white);
   }
 
   .slide.active {
     opacity: 1;
     pointer-events: all;
+  }
+
+  .slide.dark {
+    background: var(--navy-dark);
+    color: var(--white);
   }
 
   /* ── PROGRESS BAR ── */
@@ -58,31 +68,31 @@
     bottom: 0;
     left: 0;
     height: 3px;
-    background: var(--accent);
-    transition: width 0.4s ease;
+    background: var(--navy);
+    transition: width 0.35s ease;
     z-index: 100;
   }
 
   /* ── SLIDE COUNTER ── */
   .counter {
     position: fixed;
-    bottom: 2rem;
+    bottom: 1.8rem;
     right: 2.5rem;
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 0.15em;
     color: var(--muted);
     z-index: 100;
   }
 
-  /* ── NAV ARROWS ── */
+  /* ── NAV ── */
   .nav {
     position: fixed;
-    bottom: 1.6rem;
+    bottom: 1.4rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     z-index: 100;
   }
 
@@ -90,270 +100,254 @@
     background: none;
     border: 1px solid var(--border);
     color: var(--muted);
-    font-size: 1rem;
-    padding: 0.4rem 0.9rem;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.85rem;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 4px;
     transition: all 0.2s;
     font-family: 'Helvetica Neue', sans-serif;
   }
 
   .nav button:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--navy);
+    color: var(--navy);
   }
 
   /* ── TYPOGRAPHY ── */
   .eyebrow {
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.25em;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.8rem;
+    color: var(--navy-mid);
+    margin-bottom: 1.6rem;
+  }
+
+  .slide.dark .eyebrow {
+    color: rgba(255,255,255,0.5);
   }
 
   h1 {
-    font-size: clamp(2.4rem, 5vw, 4rem);
-    font-weight: 400;
-    line-height: 1.1;
-    color: var(--white);
-    max-width: 16ch;
-    margin-bottom: 1.5rem;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.08;
+    color: var(--navy-dark);
+    max-width: 18ch;
+    margin-bottom: 1.4rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: -0.02em;
   }
 
+  .slide.dark h1 { color: var(--white); }
+
   h2 {
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
-    font-weight: 400;
-    line-height: 1.2;
-    color: var(--white);
-    margin-bottom: 1.2rem;
+    font-size: clamp(1.5rem, 3vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--navy-dark);
+    margin-bottom: 1.1rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: -0.015em;
   }
+
+  .slide.dark h2 { color: var(--white); }
 
   h3 {
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.6rem;
+    color: var(--navy-mid);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
   }
 
+  .slide.dark h3 { color: rgba(255,255,255,0.5); }
+
   .lead {
-    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
     line-height: 1.7;
-    color: #c0c0c0;
-    max-width: 60ch;
+    color: #374151;
+    max-width: 58ch;
     margin-bottom: 1rem;
   }
 
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+
   .body {
-    font-size: clamp(0.85rem, 1.4vw, 1.05rem);
-    line-height: 1.8;
-    color: #999;
-    max-width: 64ch;
+    font-size: clamp(0.82rem, 1.3vw, 1rem);
+    line-height: 1.85;
+    color: var(--muted);
+    max-width: 62ch;
   }
 
-  /* ── DIVIDER ── */
+  .slide.dark .body { color: rgba(255,255,255,0.6); }
+
+  /* ── RULE ── */
   .rule {
-    width: 3rem;
-    height: 1px;
-    background: var(--accent);
-    margin-bottom: 2rem;
+    width: 2.5rem;
+    height: 2px;
+    background: var(--navy);
+    margin-bottom: 1.8rem;
   }
 
-  /* ── LARGE NUMBER ── */
-  .big-num {
-    font-size: clamp(5rem, 14vw, 10rem);
-    font-weight: 300;
-    color: var(--border);
-    line-height: 1;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.03em;
-  }
-
-  /* ── GRID LAYOUTS ── */
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4vw;
-    width: 100%;
-    max-width: 1100px;
-  }
-
-  .grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3vw;
-    width: 100%;
-    max-width: 1100px;
-  }
-
-  .card {
-    border-left: 2px solid var(--border);
-    padding-left: 1.5rem;
-  }
-
-  .card.accent {
-    border-left-color: var(--accent);
-  }
-
-  .card-num {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    font-family: 'Helvetica Neue', sans-serif;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-title {
-    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-    color: var(--white);
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
-  }
-
-  .card-body {
-    font-size: clamp(0.75rem, 1.1vw, 0.88rem);
-    color: #777;
-    line-height: 1.65;
-  }
+  .slide.dark .rule { background: rgba(255,255,255,0.3); }
 
   /* ── PHASE BADGE ── */
   .phase-badge {
     display: inline-block;
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 0.25rem 0.7rem;
-    margin-bottom: 1.5rem;
+    border: 1px solid var(--navy);
+    color: var(--navy);
+    padding: 0.22rem 0.65rem;
+    margin-bottom: 1.4rem;
+    font-weight: 600;
   }
 
-  /* ── STAT CALLOUT ── */
+  /* ── CARDS ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5vw;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .card {
+    border-left: 2px solid var(--border);
+    padding-left: 1.2rem;
+  }
+
+  .card.navy {
+    border-left-color: var(--navy);
+  }
+
+  .slide.dark .card {
+    border-left-color: rgba(255,255,255,0.2);
+  }
+
+  .card-num {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--navy-mid);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  .slide.dark .card-num { color: rgba(255,255,255,0.45); }
+
+  .card-title {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    color: var(--navy-dark);
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .slide.dark .card-title { color: var(--white); }
+
+  .card-body {
+    font-size: clamp(0.72rem, 1.05vw, 0.84rem);
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .slide.dark .card-body { color: rgba(255,255,255,0.55); }
+
+  /* ── STAT ── */
   .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 1.2rem 1.8rem;
+    background: var(--navy-light);
+    border-left: 3px solid var(--navy);
+    padding: 1rem 1.5rem;
     margin-top: 1.5rem;
-    max-width: 52ch;
+    max-width: 50ch;
   }
 
   .stat-num {
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
-    color: var(--accent);
-    font-weight: 300;
-    margin-bottom: 0.3rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+    color: var(--navy);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.2rem;
   }
 
   .stat-label {
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.72rem;
-    color: #777;
-    letter-spacing: 0.05em;
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.5;
   }
 
   /* ── TABLE ── */
   .map-table {
     width: 100%;
-    max-width: 900px;
+    max-width: 860px;
     border-collapse: collapse;
-    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    font-size: clamp(0.68rem, 1.05vw, 0.82rem);
   }
 
   .map-table th {
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--navy-mid);
     text-align: left;
-    padding: 0.5rem 1rem 0.5rem 0;
-    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 1.2rem 0.5rem 0;
+    border-bottom: 2px solid var(--navy-light);
+    font-weight: 600;
   }
 
   .map-table td {
-    color: #999;
-    padding: 0.55rem 1rem 0.55rem 0;
+    color: var(--muted);
+    padding: 0.5rem 1.2rem 0.5rem 0;
     border-bottom: 1px solid var(--border);
     line-height: 1.4;
     vertical-align: top;
   }
 
   .map-table td:first-child {
-    color: var(--accent);
+    color: var(--navy-mid);
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    font-weight: 600;
     white-space: nowrap;
   }
 
-  .map-table td:nth-child(2) { color: var(--white); }
-
-  /* ── QUOTE ── */
-  blockquote {
-    border-left: 2px solid var(--accent);
-    padding-left: 1.5rem;
-    font-size: clamp(1rem, 1.6vw, 1.2rem);
-    color: #bbb;
-    line-height: 1.7;
-    font-style: italic;
-    max-width: 54ch;
-  }
-
-  /* ── COVER SPECIFIC ── */
-  .cover-meta {
+  .map-table td:nth-child(2) {
+    color: var(--navy-dark);
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    margin-top: 2.5rem;
-    text-transform: uppercase;
-  }
-
-  .series-label {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.8rem;
-  }
-
-  /* ── VERTICAL LINE ACCENT ── */
-  .vline {
-    position: absolute;
-    left: 6vw;
-    top: 10vh;
-    bottom: 10vh;
-    width: 1px;
-    background: var(--border);
-  }
-
-  /* ── CLOSING ── */
-  .closing-accent {
-    font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 300;
-    color: var(--border);
-    line-height: 1;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
+    font-weight: 500;
   }
 
   /* ── QUESTION LIST ── */
   .q-list {
     list-style: none;
-    max-width: 62ch;
+    max-width: 64ch;
   }
 
   .q-list li {
-    padding: 0.7rem 0;
+    padding: 0.65rem 0;
     border-bottom: 1px solid var(--border);
-    font-size: clamp(0.82rem, 1.3vw, 0.95rem);
-    color: #999;
+    font-size: clamp(0.78rem, 1.2vw, 0.92rem);
+    color: var(--muted);
     line-height: 1.5;
     display: flex;
     gap: 1rem;
@@ -364,22 +358,52 @@
 
   .q-num {
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 0.1em;
-    color: var(--accent);
+    color: var(--navy-mid);
     white-space: nowrap;
-    padding-top: 0.15rem;
+    padding-top: 0.18rem;
+    font-weight: 600;
+    text-transform: uppercase;
   }
 
-  /* ── BACKGROUND TEXTURE ── */
-  .slide::before {
+  /* ── COVER META ── */
+  .cover-meta {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-top: 2.5rem;
+    text-transform: uppercase;
+  }
+
+  /* ── CLOSING LARGE TEXT ── */
+  .closing-big {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 800;
+    color: var(--navy-light);
+    line-height: 0.95;
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.03em;
+  }
+
+  /* ── LEFT ACCENT BAR ── */
+  .slide::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.03) 0%, transparent 60%);
-    pointer-events: none;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--navy);
+    opacity: 0.08;
   }
 
+  .slide.dark::after {
+    background: rgba(255,255,255,0.1);
+    opacity: 1;
+  }
 </style>
 </head>
 <body>
@@ -388,8 +412,7 @@
 
   <!-- SLIDE 1: COVER -->
   <div class="slide active">
-    <div class="vline"></div>
-    <div class="eyebrow">Paper 5 of 5 &nbsp;·&nbsp; The Four Forces Series</div>
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 5 of 5</div>
     <h1>Before It Breaks</h1>
     <div class="rule"></div>
     <p class="lead">What leaders who get transformation right<br>do before anyone is watching.</p>
@@ -403,22 +426,22 @@
     <div class="rule"></div>
     <p class="lead">It is in what happens before the launch.</p>
     <p class="body">Papers 1–4 diagnosed the patterns that cause transformation to fail — incentive fragmentation, process friction, the technology illusion, the momentum mirage.</p>
-    <p class="body" style="margin-top:1rem;">Paper 5 answers the question they leave open: <em>so what do I actually do?</em></p>
+    <p class="body" style="margin-top:0.9rem;">Paper 5 answers the question they leave open: <em>so what do I actually do?</em></p>
   </div>
 
   <!-- SLIDE 3: THE CASE -->
   <div class="slide">
     <div class="eyebrow">The opening case</div>
-    <h2>She had watched<br>two transformations<br>fail from the inside.</h2>
+    <h2>She had watched two<br>transformations fail<br>from the inside.</h2>
     <div class="rule"></div>
     <p class="body">A cloud modernization at a financial services firm. An operating model redesign at a healthcare system. In both, the breakpoints were visible from the start. By the time anyone named them, the political cost of addressing them was higher than the cost of continuing to manage around them.</p>
-    <p class="body" style="margin-top:1rem;">When she took her next role, she did something different.</p>
+    <p class="body" style="margin-top:0.9rem;">When she took her next role, she did something different.</p>
   </div>
 
   <!-- SLIDE 4: WHAT SHE DID -->
   <div class="slide">
     <div class="eyebrow">What she did differently</div>
-    <h2>Six weeks of work<br>that never appeared<br>on a project plan.</h2>
+    <h2>Six weeks of work that<br>never appeared on<br>a project plan.</h2>
     <div class="rule"></div>
     <div class="grid-2">
       <div>
@@ -427,28 +450,28 @@
       </div>
       <div>
         <p class="body">She redesigned the handoffs she recognized would slow everything down.</p>
-        <p class="body" style="margin-top:0.8rem;">The initiative took 22 months. It delivered. She would describe what she did as the only logical approach given what she had seen before.</p>
+        <p class="body" style="margin-top:0.8rem;">The initiative took 22 months. It delivered. She would describe it as the only logical approach given what she had seen before.</p>
       </div>
     </div>
   </div>
 
   <!-- SLIDE 5: THE STRUCTURE -->
-  <div class="slide">
+  <div class="slide dark">
     <div class="eyebrow">The structure</div>
     <h2>Seven disciplines.<br>Three phases.</h2>
     <div class="rule"></div>
     <div class="grid-3">
-      <div class="card accent">
+      <div class="card navy">
         <div class="card-num">Phase 01</div>
         <div class="card-title">Anchor</div>
         <div class="card-body">What is true.<br>Disciplines 1–2.</div>
       </div>
-      <div class="card accent">
+      <div class="card navy">
         <div class="card-num">Phase 02</div>
         <div class="card-title">Build</div>
         <div class="card-body">The machinery.<br>Disciplines 3–4.</div>
       </div>
-      <div class="card accent">
+      <div class="card navy">
         <div class="card-num">Phase 03</div>
         <div class="card-title">Sustain</div>
         <div class="card-body">What holds.<br>Disciplines 5–7.</div>
@@ -460,7 +483,7 @@
   <div class="slide">
     <div class="phase-badge">Phase 01 — Anchor</div>
     <h3>Discipline 1</h3>
-    <h2>Define the outcome<br>as if you will be<br>held to it.</h2>
+    <h2>Define the outcome<br>as if you will be held to it.</h2>
     <div class="rule"></div>
     <p class="lead">"Improve the customer experience" protects the leader.<br>"Reduce resolution time 40% in two quarters" creates a commitment that can fail.</p>
     <p class="body">That discomfort is the point. The outcome is ready when the CFO would recognize it as a financial event — not a program milestone.</p>
@@ -474,18 +497,18 @@
   <div class="slide">
     <div class="phase-badge">Phase 01 — Anchor</div>
     <h3>Discipline 2</h3>
-    <h2>Resolve incentive<br>conflicts before<br>the announcement.</h2>
+    <h2>Resolve incentive conflicts<br>before the announcement.</h2>
     <div class="rule"></div>
     <p class="lead">The most dangerous resistance is the kind that looks like support.</p>
     <p class="body">Before the initiative is announced: map every leader with meaningful power to accelerate or veto. For each — if this initiative succeeds but their metrics stay flat, will they prioritize it?</p>
-    <p class="body" style="margin-top:1rem;">If no, resolve the conflict before the announcement. Silence before a kickoff is not alignment. It is latency.</p>
+    <p class="body" style="margin-top:0.9rem;">If no, resolve the conflict before the announcement. Silence before a kickoff is not alignment. It is latency.</p>
   </div>
 
   <!-- SLIDE 8: BUILD D3 -->
   <div class="slide">
     <div class="phase-badge">Phase 02 — Build</div>
     <h3>Discipline 3</h3>
-    <h2>Redesign the delivery<br>system before you ask<br>it to carry new work.</h2>
+    <h2>Redesign the delivery system<br>before you ask it to carry<br>new work.</h2>
     <div class="rule"></div>
     <p class="lead">Most process failures are not wrong people or wrong tools. They are skilled people inside broken handoffs.</p>
     <p class="body">Map how work actually flows — not how it's supposed to flow. Find every handoff that adds time without adding value. Redesign or eliminate it before the new work lands on top of the old machinery.</p>
@@ -495,23 +518,23 @@
   <div class="slide">
     <div class="phase-badge">Phase 02 — Build</div>
     <h3>Discipline 4</h3>
-    <h2>Test organizational<br>readiness before you<br>deploy the technology.</h2>
+    <h2>Test organizational readiness<br>before you deploy<br>the technology.</h2>
     <div class="rule"></div>
     <div class="grid-3">
-      <div class="card">
+      <div class="card navy">
         <div class="card-num">Strategic</div>
         <div class="card-body">Every team understands what the technology is supposed to produce and how they'll know it's working.</div>
       </div>
-      <div class="card">
+      <div class="card navy">
         <div class="card-num">Process</div>
         <div class="card-body">Workflows redesigned to take advantage of what the technology actually does.</div>
       </div>
-      <div class="card">
+      <div class="card navy">
         <div class="card-num">Capability</div>
         <div class="card-body">People have the skills and authority to use it differently.</div>
       </div>
     </div>
-    <div class="stat" style="margin-top:1.5rem;">
+    <div class="stat">
       <div class="stat-num">90%</div>
       <div class="stat-label">Of companies conducting AI-driven layoffs had no mature AI systems ready — Forrester, Jan 2026</div>
     </div>
@@ -521,19 +544,19 @@
   <div class="slide">
     <div class="phase-badge">Phase 03 — Sustain</div>
     <h3>Discipline 5</h3>
-    <h2>Build the momentum<br>system before<br>you need it.</h2>
+    <h2>Build the momentum system<br>before you need it.</h2>
     <div class="rule"></div>
     <p class="lead">Most initiatives don't fail at launch. They fade.</p>
     <div class="grid-3" style="margin-top:1rem;">
-      <div class="card">
+      <div class="card navy">
         <div class="card-num">01</div>
         <div class="card-body">Name the momentum owner — a specific person whose job is to keep the initiative alive when the sponsor is occupied.</div>
       </div>
-      <div class="card">
+      <div class="card navy">
         <div class="card-num">02</div>
         <div class="card-body">Write the stall definition before anyone needs to interpret it under pressure.</div>
       </div>
-      <div class="card">
+      <div class="card navy">
         <div class="card-num">03</div>
         <div class="card-body">Build intervention authority into the operating structure — not the org chart footnote.</div>
       </div>
@@ -544,11 +567,11 @@
   <div class="slide">
     <div class="phase-badge">Phase 03 — Sustain</div>
     <h3>Discipline 6</h3>
-    <h2>Sequence for value,<br>not just for<br>completion.</h2>
+    <h2>Sequence for value,<br>not just for completion.</h2>
     <div class="rule"></div>
     <p class="lead">What will the initiative deliver in the first 90 days that is real, visible, and financially meaningful?</p>
     <p class="body">Not infrastructure for future value. Not a foundation. Actual value someone outside the program team can point to.</p>
-    <p class="body" style="margin-top:1rem;">A proof of concept tells the organization the approach might work. A delivered result tells the organization it is working.</p>
+    <p class="body" style="margin-top:0.9rem;">A proof of concept tells the organization the approach might work. A delivered result tells the organization it is working.</p>
   </div>
 
   <!-- SLIDE 12: SUSTAIN D7 -->
@@ -559,7 +582,7 @@
     <div class="rule"></div>
     <p class="lead">The launch event activates every skeptic simultaneously.</p>
     <p class="body">The alternative: identify the leaders, teams, or functions already closest to the desired state. Make participation in the first cohort selective — people who opt in are more committed than people who are assigned.</p>
-    <p class="body" style="margin-top:1rem;">Let the results of that cohort do the persuasion work an announcement never can.</p>
+    <p class="body" style="margin-top:0.9rem;">Let the results of that cohort do the persuasion work an announcement never can.</p>
   </div>
 
   <!-- SLIDE 13: MAPPING TABLE -->
@@ -605,17 +628,16 @@
   </div>
 
   <!-- SLIDE 15: CLOSING -->
-  <div class="slide">
-    <div class="closing-accent">Invisible<br>work.</div>
+  <div class="slide dark">
+    <div class="closing-big">Invisible<br>work.</div>
     <div class="rule"></div>
     <p class="lead">The leaders who get this right are not operating<br>on different information.</p>
     <p class="body">They are acting on it earlier, more specifically, and more honestly than the system typically rewards. The disciplines stay invisible. That coincidence is structural.</p>
-    <p class="cover-meta" style="margin-top:2rem;">brandonfreitag.com &nbsp;·&nbsp; Four Forces Series &nbsp;·&nbsp; Paper 5 of 5</p>
+    <p class="cover-meta" style="margin-top:2rem; color: rgba(255,255,255,0.35);">workthatholds.com &nbsp;·&nbsp; Brandon Freitag &nbsp;·&nbsp; Paper 5 of 5</p>
   </div>
 
 </div><!-- /deck -->
 
-<!-- PROGRESS + COUNTER + NAV -->
 <div class="progress" id="progress"></div>
 <div class="counter" id="counter">1 / 15</div>
 <div class="nav">
@@ -643,7 +665,6 @@
     if (e.key === 'ArrowLeft') go(-1);
   });
 
-  // Touch/swipe
   let tx = 0;
   document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
   document.addEventListener('touchend', e => {
