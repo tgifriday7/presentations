@@ -6,135 +6,62 @@
 <title>Presentations — Brandon Freitag</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --navy: #1a3a6b;
-    --navy-dark: #0f2347;
-    --navy-light: #e8eef7;
-    --white: #ffffff;
-    --muted: #6b7280;
-    --border: #dde3ed;
-  }
-
-  body {
-    background: var(--white);
-    color: var(--navy-dark);
-    font-family: 'Helvetica Neue', sans-serif;
-    min-height: 100vh;
-    padding: 8vh 10vw;
-  }
-
-  .eyebrow {
-    font-size: 0.62rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--navy);
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-  }
-
-  h1 {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 700;
-    color: var(--navy-dark);
-    margin-bottom: 0.8rem;
-    letter-spacing: -0.02em;
-  }
-
-  .rule {
-    width: 2.5rem;
-    height: 2px;
-    background: var(--navy);
-    margin-bottom: 2.5rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-    color: var(--muted);
-    margin-bottom: 4rem;
-    max-width: 50ch;
-    line-height: 1.6;
-  }
-
-  .deck-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
-    max-width: 1100px;
-  }
-
-  .deck-card {
-    border: 1px solid var(--border);
-    background: var(--white);
-    padding: 2rem;
-    text-decoration: none;
-    display: block;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-
-  .deck-card:hover {
-    border-color: var(--navy);
-    transform: translateY(-2px);
-  }
-
-  .deck-series {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--navy);
-    margin-bottom: 0.8rem;
-    font-weight: 600;
-  }
-
-  .deck-title {
-    font-size: 1.2rem;
-    color: var(--navy-dark);
-    margin-bottom: 0.6rem;
-    line-height: 1.3;
-    font-weight: 700;
-  }
-
-  .deck-desc {
-    font-size: 0.78rem;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 1.2rem;
-  }
-
-  .deck-meta {
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  footer {
-    margin-top: 6rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  footer a {
-    color: var(--muted);
-    text-decoration: none;
-  }
-
+  :root { --navy: #1a3a6b; --navy-dark: #0f2347; --navy-light: #e8eef7; --white: #ffffff; --muted: #6b7280; --border: #dde3ed; }
+  body { background: var(--white); color: var(--navy-dark); font-family: 'Helvetica Neue', sans-serif; min-height: 100vh; padding: 8vh 10vw; }
+  .eyebrow { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy); margin-bottom: 1.5rem; font-weight: 600; }
+  h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700; color: var(--navy-dark); margin-bottom: 0.8rem; letter-spacing: -0.02em; }
+  .rule { width: 2.5rem; height: 2px; background: var(--navy); margin-bottom: 2.5rem; }
+  .subtitle { font-size: 1rem; color: var(--muted); margin-bottom: 4rem; max-width: 50ch; line-height: 1.6; }
+  .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; max-width: 1100px; }
+  .deck-card { border: 1px solid var(--border); background: var(--white); padding: 2rem; text-decoration: none; display: block; transition: border-color 0.2s, transform 0.2s; }
+  .deck-card:hover { border-color: var(--navy); transform: translateY(-2px); }
+  .deck-series { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--navy); margin-bottom: 0.8rem; font-weight: 600; }
+  .deck-title { font-size: 1.1rem; color: var(--navy-dark); margin-bottom: 0.6rem; line-height: 1.3; font-weight: 700; }
+  .deck-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.2rem; }
+  .deck-meta { font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+  footer { margin-top: 6rem; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  footer a { color: var(--muted); text-decoration: none; }
   footer a:hover { color: var(--navy); }
 </style>
 </head>
 <body>
-
   <div class="eyebrow">Brandon Freitag</div>
-  <h1>Presentations</h1>
+  <h1>Work That Holds</h1>
   <div class="rule"></div>
   <p class="subtitle">Research-backed frameworks on organizational transformation, leadership, and the forces that determine whether change holds.</p>
 
   <div class="deck-grid">
 
-    <a class="deck-card" href="/before-it-breaks.html">
-      <div class="deck-series">Four Forces Series · Paper 5 of 5</div>
+    <a class="deck-card" href="/five-breakpoints">
+      <div class="deck-series">Work That Holds · Paper 1 of 5</div>
+      <div class="deck-title">Five Breakpoints Leaders Miss</div>
+      <div class="deck-desc">The five places where organizational transformations predictably fail — and the forces beneath each one.</div>
+      <div class="deck-meta">April 2026 · 15 slides</div>
+    </a>
+
+    <a class="deck-card" href="/stewardship-gap">
+      <div class="deck-series">Work That Holds · Paper 2 of 5</div>
+      <div class="deck-title">The Stewardship Gap</div>
+      <div class="deck-desc">Why transformations keep losing force after leaders have already named the problem.</div>
+      <div class="deck-meta">May 2026 · 15 slides</div>
+    </a>
+
+    <a class="deck-card" href="/designed-to-stall">
+      <div class="deck-series">Work That Holds · Paper 3 of 5</div>
+      <div class="deck-title">Designed to Stall</div>
+      <div class="deck-desc">Why the system keeps rewarding the choices that cause transformation to fail — and six mechanisms that change the structure.</div>
+      <div class="deck-meta">May 2026 · 15 slides</div>
+    </a>
+
+    <a class="deck-card" href="/the-ai-mirror">
+      <div class="deck-series">Work That Holds · Paper 4 of 5</div>
+      <div class="deck-title">The AI Mirror</div>
+      <div class="deck-desc">Agentic AI changes the constraint set every modern organization was designed around — and tells the truth about what was already broken.</div>
+      <div class="deck-meta">May 2026 · 15 slides</div>
+    </a>
+
+    <a class="deck-card" href="/before-it-breaks">
+      <div class="deck-series">Work That Holds · Paper 5 of 5</div>
       <div class="deck-title">Before It Breaks</div>
       <div class="deck-desc">Seven disciplines. Three phases. What leaders who get transformation right do before anyone is watching.</div>
       <div class="deck-meta">June 2026 · 15 slides</div>
@@ -143,10 +70,9 @@
   </div>
 
   <footer>
-    <a href="https://brandonfreitag.com">brandonfreitag.com</a>
+    <a href="https://workthatholds.com">workthatholds.com</a>
     &nbsp;·&nbsp;
-    <a href="https://brandonfreitag.substack.com">Substack</a>
+    <a href="https://brandonfreitag.com">brandonfreitag.com</a>
   </footer>
-
 </body>
 </html>

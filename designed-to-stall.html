@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Designed to Stall — Brandon Freitag</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --navy: #1a3a6b; --navy-dark: #0f2347; --navy-mid: #2a4f8a; --navy-light: #e8eef7; --white: #ffffff; --text: #1a1a2e; --muted: #6b7280; --border: #dde3ed; }
+  html { font-size: 18px; }
+  body { background: var(--white); color: var(--text); font-family: 'Georgia', serif; overflow: hidden; height: 100vh; width: 100vw; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 8vh 10vw; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; background: var(--white); }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .slide.dark { background: var(--navy-dark); color: var(--white); }
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--navy); transition: width 0.35s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
+  .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
+  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Helvetica Neue', sans-serif; }
+  .nav button:hover { border-color: var(--navy); color: var(--navy); }
+  .eyebrow { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.6rem; font-weight: 600; }
+  .slide.dark .eyebrow { color: rgba(255,255,255,0.45); }
+  h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.08; color: var(--navy-dark); max-width: 20ch; margin-bottom: 1.4rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.02em; }
+  .slide.dark h1 { color: var(--white); }
+  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.15; color: var(--navy-dark); margin-bottom: 1.1rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.015em; }
+  .slide.dark h2 { color: var(--white); }
+  .lead { font-size: clamp(0.95rem, 1.7vw, 1.2rem); line-height: 1.7; color: #374151; max-width: 58ch; margin-bottom: 1rem; }
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+  .body { font-size: clamp(0.8rem, 1.25vw, 0.95rem); line-height: 1.85; color: var(--muted); max-width: 62ch; }
+  .slide.dark .body { color: rgba(255,255,255,0.6); }
+  .rule { width: 2.5rem; height: 2px; background: var(--navy); margin-bottom: 1.8rem; }
+  .slide.dark .rule { background: rgba(255,255,255,0.3); }
+  .pressure-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--navy); color: var(--navy); padding: 0.22rem 0.65rem; margin-bottom: 1.4rem; font-weight: 600; display: inline-block; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; width: 100%; max-width: 1000px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5vw; width: 100%; max-width: 1000px; }
+  .card { border-left: 2px solid var(--border); padding-left: 1.2rem; }
+  .card.navy { border-left-color: var(--navy); }
+  .slide.dark .card { border-left-color: rgba(255,255,255,0.2); }
+  .card-num { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--navy-mid); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .slide.dark .card-num { color: rgba(255,255,255,0.4); }
+  .card-title { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(0.82rem, 1.3vw, 0.95rem); color: var(--navy-dark); margin-bottom: 0.35rem; font-weight: 600; line-height: 1.3; }
+  .slide.dark .card-title { color: var(--white); }
+  .card-body { font-size: clamp(0.7rem, 1vw, 0.82rem); color: var(--muted); line-height: 1.65; }
+  .slide.dark .card-body { color: rgba(255,255,255,0.55); }
+  .stat { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 1rem 1.5rem; margin-top: 1.5rem; max-width: 50ch; }
+  .stat-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--navy); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+  .stat-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
+  .closing-big { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.4rem, 3.5vw, 2.8rem); font-weight: 800; color: rgba(255,255,255,0.15); line-height: 1.15; margin-bottom: 1.2rem; letter-spacing: -0.02em; max-width: 22ch; }
+  .cover-meta { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--muted); margin-top: 2.5rem; text-transform: uppercase; }
+  .mech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5vw; width: 100%; max-width: 1000px; }
+  .mech-card { border: 1px solid rgba(255,255,255,0.12); padding: 1rem 1.2rem; }
+  .mech-num { font-family: 'Helvetica Neue', sans-serif; font-size: 0.55rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.35); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .mech-title { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(0.75rem, 1.1vw, 0.88rem); color: var(--white); font-weight: 600; line-height: 1.3; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <div class="slide active">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h1>Designed to Stall</h1>
+    <div class="rule"></div>
+    <p class="lead">Why the system keeps rewarding the choices that cause transformation to fail.</p>
+    <p class="cover-meta">Brandon Freitag &nbsp;·&nbsp; May 2026</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>The 70 percent failure rate is not a knowledge gap.</h2>
+    <div class="rule"></div>
+    <p class="lead">It is a structural feature of how leadership accountability works in modern enterprises.</p>
+    <p class="body">Skipping the design work is individually rational. Telling leaders to be different leaders has been the field's response for decades. It has not moved the number. Moving the number requires changing the system, not just the people inside it.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>The post-mortem pattern.</h2>
+    <div class="rule"></div>
+    <p class="lead">"The program director is replaced. The consulting firm is blamed. The VP who agreed to the scope has been promoted."</p>
+    <p class="body">Accountability lands one or two levels below the actual decision point. The CFO who set the timeline has signed off on the post-mortem. The leader who declined to address the structural issues at launch is at the next company. The same five breakpoints reappear in the next transformation.</p>
+  </div>
+
+  <div class="slide dark">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>Three pressures make skipping the design work the path of least resistance.</h2>
+    <div class="rule"></div>
+    <div class="grid-3">
+      <div class="card navy"><div class="card-num">Pressure 1</div><div class="card-title">Skill Gravity</div><div class="card-body">Executives are experts at work that produces visible results quickly. Organizational design produces no short-term signal anyone tracks.</div></div>
+      <div class="card navy"><div class="card-num">Pressure 2</div><div class="card-title">The Feedback Gap</div><div class="card-body">C-suite tenure ~4 years. Design decisions produce consequences in 18–36 months. No corrective loop.</div></div>
+      <div class="card navy"><div class="card-num">Pressure 3</div><div class="card-title">Career Calculus</div><div class="card-body">Real transformation means visible risk. Softer alternatives manage the pressure without creating the conflict.</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="pressure-label">Pressure 1 — Skill Gravity</div>
+    <h2>Senior executives are real experts in customer engagement, product judgment, operational firefighting.</h2>
+    <div class="rule"></div>
+    <p class="lead">These activities produce visible results quickly and feel like leading.</p>
+    <p class="body">Organizational design is structural, slow, produces no short-term signal anyone tracks, and requires political confrontation with peers. The layer that should own design most — the group just below the CEO — is the layer most consumed by upward management and execution crises. The work falls in the gap between strategy above and delivery below. It belongs to everyone in theory and to no one in practice.</p>
+  </div>
+
+  <div class="slide">
+    <div class="pressure-label">Pressure 2 — The Feedback Gap</div>
+    <h2>Average C-suite tenure: ~4 years. Major design decisions produce visible consequences in 18–36 months.</h2>
+    <div class="rule"></div>
+    <p class="lead">Most leaders who skip the design work will not be in the role when the transformation stalls.</p>
+    <p class="body">Accountability diffuses by the time the consequences arrive. The failure lands in the delivery layer while the design choices that made it likely remain largely unexamined. No corrective feedback loop. Same choices made again by the same kind of leader in the same kind of role.</p>
+  </div>
+
+  <div class="slide">
+    <div class="pressure-label">Pressure 3 — Career Calculus</div>
+    <h2>A real transformation effort means visible risk.</h2>
+    <div class="rule"></div>
+    <p class="lead">Political conflict, short-term disruption, the possibility of being associated with a failed initiative.</p>
+    <p class="body">Softer alternatives manage the pressure without creating the conflict: a reorganization that signals decisiveness without redesigning incentives, a technology investment that demonstrates activity without requiring process change, a communications campaign that updates the language without changing the operating model. Each is individually rational. Together they produce the 70 percent.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>Why better leaders won't fix it.</h2>
+    <div class="rule"></div>
+    <p class="lead">The Lean Manufacturing case: hundreds of manufacturers sent executives to Toyota. The frameworks transferred. The structural conditions did not.</p>
+    <p class="body">Implementations that adopted the visible methodology without the underlying structural commitments produced sustained results in roughly the same proportion as the broader transformation literature. Training and frameworks improved across the same decades. The rate did not move.</p>
+    <p class="body" style="margin-top:0.8rem; font-weight:500; color: var(--navy-dark);">The strongest predictor of whether a leader does the design work is whether the structure penalizes skipping it. Not whether they understand it.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>Stewardship without structural authority is worse than no stewardship at all.</h2>
+    <div class="rule"></div>
+    <p class="lead">The DevOps pattern: responsibility for the gap, authority over neither side.</p>
+    <p class="body">Dev kept the speed mandate. Ops kept the stability mandate. DevOps became the steward of the gap with no power to change behavior on either end. Both sides had somewhere to send problems they didn't want to own. The DevOps team absorbed the blame for failures caused by the relationship between Dev and Ops.</p>
+    <p class="body" style="margin-top:0.8rem;">It signals the work is being addressed while ensuring it cannot be. It absorbs the political pressure that would otherwise force structural change.</p>
+  </div>
+
+  <div class="slide dark">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>Six structural mechanisms.</h2>
+    <div class="rule"></div>
+    <div class="mech-grid">
+      <div class="mech-card"><div class="mech-num">01</div><div class="mech-title">Stewardship lines that survive sponsor turnover</div></div>
+      <div class="mech-card"><div class="mech-num">02</div><div class="mech-title">Pre-committed stall protocols</div></div>
+      <div class="mech-card"><div class="mech-num">03</div><div class="mech-title">Compensation tied to multi-year transformation outcomes</div></div>
+      <div class="mech-card"><div class="mech-num">04</div><div class="mech-title">Hard-to-reverse architectural commitments at launch</div></div>
+      <div class="mech-card"><div class="mech-num">05</div><div class="mech-title">Post-mortem discipline that names the skipped design decision</div></div>
+      <div class="mech-card"><div class="mech-num">06</div><div class="mech-title">A standing organizational design function</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>Mechanism 3 — Compensation tied to multi-year outcomes.</h2>
+    <div class="rule"></div>
+    <p class="lead">The mismatch is structural: executive compensation on annual cycles; transformation results across 18–36 months.</p>
+    <p class="body">A meaningful share of compensation tied to specific multi-year transformation outcomes, vesting over the original time horizon regardless of role changes. Working example: Microsoft's cloud transition under Nadella — executive long-term incentive grants tied to multi-year cloud adoption outcomes. The mechanism makes the design work rational to invest in before launch.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>Mechanism 4 — Hard-to-reverse commitments.</h2>
+    <div class="rule"></div>
+    <p class="lead">Most transformations are launched with reversible commitments. Reversibility makes incremental retreat the path of least resistance.</p>
+    <div class="grid-2">
+      <div class="card navy"><div class="card-num">Working example</div><div class="card-body">AWS 2006 launch — customer-facing service contracts and public pricing commitments couldn't be quietly walked back. The commitment structure made reversibility visible and expensive.</div></div>
+      <div class="card navy"><div class="card-num">Contrasting example</div><div class="card-body">IBM's repeated reversibility around cloud strategy across CEO transitions. Each reversal absorbed quietly. No structural cost to retreating.</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>What each mechanism changes.</h2>
+    <div class="rule"></div>
+    <p class="lead">Each mechanism shifts the rational response to a transformation moment.</p>
+    <div class="grid-2" style="margin-top:0.5rem;">
+      <div class="card navy"><div class="card-body">The steward with structural authority acts on what they see — because they have the authority to act.</div></div>
+      <div class="card navy"><div class="card-body">The leader with multi-year compensation exposure invests in design before launch — because retreat is expensive.</div></div>
+      <div class="card navy" style="margin-top:1.5rem;"><div class="card-body">The team that knows the post-mortem will trace failures to design decisions doesn't skip those decisions.</div></div>
+      <div class="card navy" style="margin-top:1.5rem;"><div class="card-body">The board that has to undo a public commitment thinks harder before retreating.</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 3 of 5</div>
+    <h2>The honest trade.</h2>
+    <div class="rule"></div>
+    <p class="lead">Implementing the six mechanisms is not free. Boards lose flexibility. Executives lose upside optionality.</p>
+    <p class="body">The argument: the tradeoff has become harder to defend. The 70 percent failure rate is not an anomaly. It is the equilibrium produced by the current design. Doing the structural work to move it costs less than the current arrangement does.</p>
+    <p class="body" style="margin-top:0.8rem;">None of these require heroic leadership. They make the design work the rational path for leaders responding to their actual incentives.</p>
+  </div>
+
+  <div class="slide dark">
+    <div class="closing-big">Doing the structural work to move it costs less than the current arrangement does.</div>
+    <div class="rule"></div>
+    <p class="cover-meta" style="color:rgba(255,255,255,0.3);">workthatholds.com &nbsp;·&nbsp; brandonfreitag.com</p>
+  </div>
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 15</div>
+<div class="nav"><button onclick="go(-1)">←</button><button onclick="go(1)">→</button></div>
+<script>
+  const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
+  function show(n) { slides[cur].classList.remove('active'); cur = (n+total)%total; slides[cur].classList.add('active'); document.getElementById('progress').style.width=((cur+1)/total*100)+'%'; document.getElementById('counter').textContent=(cur+1)+' / '+total; }
+  function go(d) { show(cur+d); }
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key===' ')go(1); if(e.key==='ArrowLeft')go(-1); });
+  let tx=0; document.addEventListener('touchstart',e=>tx=e.touches[0].clientX); document.addEventListener('touchend',e=>{ const dx=tx-e.changedTouches[0].clientX; if(Math.abs(dx)>40)go(dx>0?1:-1); });
+  show(0);
+</script>
+</body>
+</html>

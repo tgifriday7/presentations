@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Stewardship Gap — Brandon Freitag</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --navy: #1a3a6b; --navy-dark: #0f2347; --navy-mid: #2a4f8a; --navy-light: #e8eef7; --white: #ffffff; --text: #1a1a2e; --muted: #6b7280; --border: #dde3ed; }
+  html { font-size: 18px; }
+  body { background: var(--white); color: var(--text); font-family: 'Georgia', serif; overflow: hidden; height: 100vh; width: 100vw; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 8vh 10vw; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; background: var(--white); }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .slide.dark { background: var(--navy-dark); color: var(--white); }
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--navy); transition: width 0.35s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
+  .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
+  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Helvetica Neue', sans-serif; }
+  .nav button:hover { border-color: var(--navy); color: var(--navy); }
+  .eyebrow { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.6rem; font-weight: 600; }
+  .slide.dark .eyebrow { color: rgba(255,255,255,0.45); }
+  h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.08; color: var(--navy-dark); max-width: 20ch; margin-bottom: 1.4rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.02em; }
+  .slide.dark h1 { color: var(--white); }
+  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.15; color: var(--navy-dark); margin-bottom: 1.1rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.015em; }
+  .slide.dark h2 { color: var(--white); }
+  h3 { font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 0.5rem; font-weight: 600; }
+  .slide.dark h3 { color: rgba(255,255,255,0.45); }
+  .lead { font-size: clamp(0.95rem, 1.7vw, 1.2rem); line-height: 1.7; color: #374151; max-width: 58ch; margin-bottom: 1rem; }
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+  .body { font-size: clamp(0.8rem, 1.25vw, 0.95rem); line-height: 1.85; color: var(--muted); max-width: 62ch; }
+  .slide.dark .body { color: rgba(255,255,255,0.6); }
+  .rule { width: 2.5rem; height: 2px; background: var(--navy); margin-bottom: 1.8rem; }
+  .slide.dark .rule { background: rgba(255,255,255,0.3); }
+  .force-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--navy); color: var(--navy); padding: 0.22rem 0.65rem; margin-bottom: 1.4rem; font-weight: 600; display: inline-block; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; width: 100%; max-width: 1000px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; width: 100%; max-width: 1000px; }
+  .card { border-left: 2px solid var(--border); padding-left: 1.2rem; }
+  .card.navy { border-left-color: var(--navy); }
+  .slide.dark .card { border-left-color: rgba(255,255,255,0.2); }
+  .card-num { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--navy-mid); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .slide.dark .card-num { color: rgba(255,255,255,0.4); }
+  .card-title { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(0.82rem, 1.3vw, 0.95rem); color: var(--navy-dark); margin-bottom: 0.35rem; font-weight: 600; line-height: 1.3; }
+  .slide.dark .card-title { color: var(--white); }
+  .card-body { font-size: clamp(0.7rem, 1vw, 0.82rem); color: var(--muted); line-height: 1.65; }
+  .slide.dark .card-body { color: rgba(255,255,255,0.55); }
+  .stat { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 1rem 1.5rem; margin-top: 1.5rem; max-width: 50ch; }
+  .stat-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--navy); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+  .stat-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
+  .map-table { width: 100%; max-width: 700px; border-collapse: collapse; font-size: clamp(0.72rem, 1.1vw, 0.85rem); }
+  .map-table th { font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.45); text-align: left; padding: 0.5rem 1.5rem 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.15); font-weight: 600; }
+  .map-table td { color: rgba(255,255,255,0.65); padding: 0.55rem 1.5rem 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); line-height: 1.4; }
+  .map-table td:first-child { color: rgba(255,255,255,0.5); font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+  .map-table td:nth-child(2) { color: var(--white); font-family: 'Helvetica Neue', sans-serif; font-weight: 600; }
+  .closing-big { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.8rem, 5vw, 4rem); font-weight: 800; color: rgba(255,255,255,0.12); line-height: 1.1; margin-bottom: 1.2rem; letter-spacing: -0.02em; }
+  .cover-meta { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--muted); margin-top: 2.5rem; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <div class="slide active">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h1>The Stewardship Gap</h1>
+    <div class="rule"></div>
+    <p class="lead">Why transformations keep losing force after leaders have already named the problem.</p>
+    <p class="cover-meta">Brandon Freitag &nbsp;·&nbsp; May 2026</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>Recognizing the breakpoints<br>is not enough.</h2>
+    <div class="rule"></div>
+    <p class="lead">The diagnosis was complete in most stalled transformations.</p>
+    <p class="body">What was missing is what is missing in most stalled transformations: no one whose job it was to act on it. The stewardship gap is the space between knowing what the transformation needs and having someone whose explicit job it is to keep that work alive once the launch energy is gone.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>The gap defined.</h2>
+    <div class="rule"></div>
+    <p class="lead">"The space between knowing what the transformation needs and having someone whose explicit job it is to keep that work alive."</p>
+    <p class="body">Each of the four forces requires a stewardship function — a specific kind of ongoing work, owned by someone with the authority to do it. Most transformations launch with all four forces intact. They fail because no one is responsible for sustaining them when operating pressure arrives.</p>
+  </div>
+
+  <div class="slide dark">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>Four forces.<br>Four stewardship functions.</h2>
+    <div class="rule"></div>
+    <table class="map-table">
+      <thead><tr><th>Force</th><th>Stewardship Function</th><th>Breakpoint When Absent</th></tr></thead>
+      <tbody>
+        <tr><td>Purpose</td><td>Interpretation</td><td>Strategic Disconnection</td></tr>
+        <tr><td>Commitment</td><td>Ownership</td><td>Incentive Fragmentation</td></tr>
+        <tr><td>Capability</td><td>Architecture</td><td>Process Friction + Technology Illusion</td></tr>
+        <tr><td>Momentum</td><td>Reinforcement</td><td>Momentum Mirage</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="slide">
+    <div class="force-label">Purpose — Carried by Interpretation</div>
+    <h2>Purpose is not<br>a values statement.</h2>
+    <div class="rule"></div>
+    <p class="lead">It is a specific, measurable definition of what success looks like that every team at every level would describe the same way.</p>
+    <p class="body">The cloud migration case: launched to improve deployment speed. Infrastructure heard "reduce ticket time." Security heard "maintain compliance." Applications heard "get off legacy hardware." One year later: deployment speed unchanged.</p>
+    <div class="stat"><div class="stat-num">29pt</div><div class="stat-label">Strategic clarity collapse across one management layer — McKinsey 2026. Information passed through a chain degrades predictably at each handoff.</div></div>
+  </div>
+
+  <div class="slide">
+    <div class="force-label">Commitment — Carried by Ownership</div>
+    <h2>Commitment is the designed priority<br>that holds when tradeoffs appear.</h2>
+    <div class="rule"></div>
+    <p class="lead">You can read an organization's real commitments by looking at where money and time actually go under pressure — not at what was promised in the kickoff deck.</p>
+    <p class="body">The insurance case: AI-driven claims triage launched with C-suite mandate. Months later, adjusters still running dual processes. No one had told them the manual process was no longer required. They were still being measured on claim accuracy. The AI worked. The commitment had not been designed.</p>
+  </div>
+
+  <div class="slide">
+    <div class="force-label">Capability — Carried by Architecture</div>
+    <h2>Capability is not competence,<br>talent, or tooling.</h2>
+    <div class="rule"></div>
+    <p class="lead">It is the organizational machinery: how work moves, where decisions get made, how exceptions get handled.</p>
+    <p class="body">The CRM case: new platform aligned to connect departments. Six months after launch, handoff failures had not declined. Each department still managed its own queue independently. The platform could show the information. The process for acting on it did not exist. Nobody owned the space between departments.</p>
+  </div>
+
+  <div class="slide">
+    <div class="force-label">Momentum — Carried by Reinforcement</div>
+    <h2>Momentum dies when organizations<br>confuse activity with movement.</h2>
+    <div class="rule"></div>
+    <p class="lead">It dies when the people responsible for reinforcing it are pulled to other priorities and no one is watching for drift.</p>
+    <p class="body">The manufacturing case: operational redesign with strong early momentum. At 90-day mark, the champion was pulled to other work. Teams quietly reverted — not through resistance, but because nothing in the environment was reinforcing the change. By formal assessment: old model had reclaimed the ground.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>Stewardship roles are<br>structurally underrewarded.</h2>
+    <div class="rule"></div>
+    <p class="lead">Launches come with fanfare, executive visibility, and credit. The steward inherits the work that follows.</p>
+    <p class="body">Measured against outcomes that take years to surface — while the leader who declared victory at launch has frequently moved on. This is not a character problem. It is a structural one. The system rewards launches over sustainment. Paper 3 takes this on directly.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>Four self-check questions.</h2>
+    <div class="rule"></div>
+    <div class="grid-2">
+      <div class="card navy"><div class="card-num">Purpose</div><div class="card-body">Who is actively maintaining the definition of success — not just announcing it?</div></div>
+      <div class="card navy"><div class="card-num">Commitment</div><div class="card-body">Do measurement criteria reward the new state, and has the old way been explicitly retired?</div></div>
+      <div class="card navy" style="margin-top:1.5rem;"><div class="card-num">Capability</div><div class="card-body">If you mapped how work actually flows today, would it look like the formal process or the workarounds your teams built to survive it?</div></div>
+      <div class="card navy" style="margin-top:1.5rem;"><div class="card-num">Momentum</div><div class="card-body">Who is responsible for telling the difference between progress and performance, and what authority do they have to act on it?</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>The gap in the data.</h2>
+    <div class="rule"></div>
+    <div class="grid-2">
+      <div class="stat" style="margin-top:0;"><div class="stat-num">81%</div><div class="stat-label">Of boards raised adaptability expectations — KPMG Adaptability Index 2026</div></div>
+      <div class="stat" style="margin-top:0;"><div class="stat-num">30%</div><div class="stat-label">Of organizations can actually reconfigure quickly — same study</div></div>
+    </div>
+    <p class="body" style="margin-top:1.5rem;">Bain Live the Model: only 1 in 3 feel personally motivated to adopt the new operating structure. The gap between expectation and execution is where stewardship lives — or doesn't.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>A launch is an event.<br>A build is something else.</h2>
+    <div class="rule"></div>
+    <p class="lead">There is a structural difference between launching a transformation and building one.</p>
+    <p class="body">A launch is an event that happens once. A build is a set of designed conditions that someone must maintain, with named owners and the authority to act when conditions begin to weaken. Most transformation programs are designed as launches. They are measured as builds.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>The 90-day test.</h2>
+    <div class="rule"></div>
+    <p class="lead">"What would happen if you stopped actively managing this transformation for 90 days?"</p>
+    <p class="body">If the honest answer is that the work would keep moving without you, you have built stewardship into how the organization operates.</p>
+    <p class="body" style="margin-top:0.8rem;">If not — you have launched one. Not built one.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 2 of 5</div>
+    <h2>Most transformations launch<br>with all four forces intact.</h2>
+    <div class="rule"></div>
+    <p class="lead">They fail because no one is responsible for sustaining them when operating pressure arrives.</p>
+    <p class="body">Naming a steward is necessary. It is not sufficient. Stewardship without structural support produces the DevOps pattern: responsibility for the gap, authority over neither side. Paper 3 develops what structural support actually looks like.</p>
+  </div>
+
+  <div class="slide dark">
+    <div class="closing-big">A launch is an event<br>that happens once.<br>A build is a set of<br>designed conditions<br>that someone must maintain.</div>
+    <div class="rule"></div>
+    <p class="cover-meta" style="color:rgba(255,255,255,0.3);">workthatholds.com &nbsp;·&nbsp; brandonfreitag.com</p>
+  </div>
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 15</div>
+<div class="nav"><button onclick="go(-1)">←</button><button onclick="go(1)">→</button></div>
+<script>
+  const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
+  function show(n) { slides[cur].classList.remove('active'); cur = (n+total)%total; slides[cur].classList.add('active'); document.getElementById('progress').style.width=((cur+1)/total*100)+'%'; document.getElementById('counter').textContent=(cur+1)+' / '+total; }
+  function go(d) { show(cur+d); }
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key===' ')go(1); if(e.key==='ArrowLeft')go(-1); });
+  let tx=0; document.addEventListener('touchstart',e=>tx=e.touches[0].clientX); document.addEventListener('touchend',e=>{ const dx=tx-e.changedTouches[0].clientX; if(Math.abs(dx)>40)go(dx>0?1:-1); });
+  show(0);
+</script>
+</body>
+</html>

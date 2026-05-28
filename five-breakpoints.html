@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Breakpoints Leaders Miss — Brandon Freitag</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --navy: #1a3a6b; --navy-dark: #0f2347; --navy-mid: #2a4f8a; --navy-light: #e8eef7; --white: #ffffff; --text: #1a1a2e; --muted: #6b7280; --border: #dde3ed; }
+  html { font-size: 18px; }
+  body { background: var(--white); color: var(--text); font-family: 'Georgia', serif; overflow: hidden; height: 100vh; width: 100vw; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 8vh 10vw; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; background: var(--white); }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .slide.dark { background: var(--navy-dark); color: var(--white); }
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--navy); transition: width 0.35s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
+  .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
+  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Helvetica Neue', sans-serif; }
+  .nav button:hover { border-color: var(--navy); color: var(--navy); }
+  .eyebrow { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.6rem; font-weight: 600; }
+  .slide.dark .eyebrow { color: rgba(255,255,255,0.45); }
+  h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.08; color: var(--navy-dark); max-width: 20ch; margin-bottom: 1.4rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.02em; }
+  .slide.dark h1 { color: var(--white); }
+  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.15; color: var(--navy-dark); margin-bottom: 1.1rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.015em; }
+  .slide.dark h2 { color: var(--white); }
+  h3 { font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 0.5rem; font-weight: 600; }
+  .slide.dark h3 { color: rgba(255,255,255,0.45); }
+  .lead { font-size: clamp(0.95rem, 1.7vw, 1.2rem); line-height: 1.7; color: #374151; max-width: 58ch; margin-bottom: 1rem; }
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+  .body { font-size: clamp(0.8rem, 1.25vw, 0.95rem); line-height: 1.85; color: var(--muted); max-width: 62ch; }
+  .slide.dark .body { color: rgba(255,255,255,0.6); }
+  .rule { width: 2.5rem; height: 2px; background: var(--navy); margin-bottom: 1.8rem; }
+  .slide.dark .rule { background: rgba(255,255,255,0.3); }
+  .bp-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--navy); color: var(--navy); padding: 0.22rem 0.65rem; margin-bottom: 1.4rem; font-weight: 600; display: inline-block; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; width: 100%; max-width: 1000px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5vw; width: 100%; max-width: 1000px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; width: 100%; max-width: 1000px; }
+  .card { border-left: 2px solid var(--border); padding-left: 1.2rem; }
+  .card.navy { border-left-color: var(--navy); }
+  .slide.dark .card { border-left-color: rgba(255,255,255,0.2); }
+  .card-num { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--navy-mid); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .slide.dark .card-num { color: rgba(255,255,255,0.4); }
+  .card-title { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(0.82rem, 1.3vw, 0.95rem); color: var(--navy-dark); margin-bottom: 0.35rem; font-weight: 600; line-height: 1.3; }
+  .slide.dark .card-title { color: var(--white); }
+  .card-body { font-size: clamp(0.7rem, 1vw, 0.82rem); color: var(--muted); line-height: 1.65; }
+  .slide.dark .card-body { color: rgba(255,255,255,0.55); }
+  .stat { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 1rem 1.5rem; margin-top: 1.5rem; max-width: 50ch; }
+  .stat-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--navy); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+  .stat-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
+  .map-table { width: 100%; max-width: 860px; border-collapse: collapse; font-size: clamp(0.66rem, 1vw, 0.8rem); }
+  .map-table th { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--navy-mid); text-align: left; padding: 0.5rem 1rem 0.5rem 0; border-bottom: 2px solid var(--navy-light); font-weight: 600; }
+  .map-table td { color: var(--muted); padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--border); line-height: 1.4; vertical-align: top; }
+  .map-table td:first-child { color: var(--navy-mid); font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+  .map-table td:nth-child(2) { color: var(--navy-dark); font-family: 'Helvetica Neue', sans-serif; font-weight: 500; }
+  .closing-big { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 800; color: rgba(255,255,255,0.12); line-height: 0.95; margin-bottom: 1.2rem; letter-spacing: -0.03em; }
+  .cover-meta { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--muted); margin-top: 2.5rem; text-transform: uppercase; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5vw; width: 100%; max-width: 1000px; margin-top: 0.5rem; }
+  .stat-card { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 0.8rem 1rem; }
+  .stat-card-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.1rem, 2vw, 1.6rem); color: var(--navy); font-weight: 700; margin-bottom: 0.2rem; }
+  .stat-card-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; color: var(--muted); line-height: 1.45; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <div class="slide active">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h1>Five Breakpoints Leaders Miss</h1>
+    <div class="rule"></div>
+    <p class="lead">The five places where organizational transformations predictably fail.</p>
+    <p class="cover-meta">Brandon Freitag &nbsp;·&nbsp; April 2026</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>The 70 percent failure rate<br>is not a knowledge gap.</h2>
+    <div class="rule"></div>
+    <p class="lead">These breakpoints are diagnosable before they become expensive.</p>
+    <p class="body">Most organizations name them only after the political cost of addressing them exceeds the cost of managing around them. The breakpoints are not random. They are structural. They surface at the same points in the transformation arc because they are produced by the same underlying conditions.</p>
+  </div>
+
+  <div class="slide dark">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>Five breakpoints.<br>One underlying pattern.</h2>
+    <div class="rule"></div>
+    <div class="grid-3">
+      <div class="card navy"><div class="card-num">Column 1</div><div class="card-title">The Breakpoints</div><div class="card-body">Strategic Disconnection · Incentive Fragmentation · Process Friction · Technology Illusion · Momentum Mirage</div></div>
+      <div class="card navy"><div class="card-num">Column 2</div><div class="card-title">The Forces at Risk</div><div class="card-body">Purpose · Commitment · Capability · Capability · Momentum</div></div>
+      <div class="card navy"><div class="card-num">Column 3</div><div class="card-title">The Missing Stewardship</div><div class="card-body">Interpretation · Ownership · Architecture · Architecture · Reinforcement</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="bp-label">Breakpoint 1 — Strategic Disconnection</div>
+    <h2>The most common form of strategic failure doesn't look like disagreement.<br>It looks like alignment.</h2>
+    <div class="rule"></div>
+    <p class="body">Leaders leave the kickoff nodding. Six months later, teams have diverged in ways that would have been visible if anyone had looked at what "aligned" actually meant. The gap is not communication failure. It's structural: strategy gets retold at each organizational layer, and each retelling changes it.</p>
+    <div class="stat"><div class="stat-num">29pt</div><div class="stat-label">Collapse in strategic clarity across one layer — McKinsey 2026<br>56% C-suite clarity vs. 27% middle management</div></div>
+  </div>
+
+  <div class="slide">
+    <div class="bp-label">Breakpoint 2 — Incentive Fragmentation</div>
+    <h2>The most dangerous resistance is the kind that looks like support.</h2>
+    <div class="rule"></div>
+    <p class="lead">Leaders with power to veto the transformation attend every planning meeting without raising objections — then surface misaligned incentives when the real tradeoffs arrive.</p>
+    <p class="body">The CISO pattern: attends all planning meetings, raises no objections, then six months in announces a separate consulting engagement and security requirements that effectively block the program. The conflict was visible before the first meeting. No one had a conversation about it.</p>
+  </div>
+
+  <div class="slide">
+    <div class="bp-label">Breakpoint 3 — Process Friction</div>
+    <h2>Most process failures are not wrong people or wrong tools.</h2>
+    <div class="rule"></div>
+    <p class="lead">They are skilled people working inside broken handoffs. The strategy is not executed — it is negotiated, one handoff at a time.</p>
+    <p class="body">The rigidity shows up in handoffs that stall, decisions that escalate unnecessarily, and processes designed for different requirements that were never redesigned.</p>
+    <div class="stat"><div class="stat-num">38%</div><div class="stat-label">Cite rigid structures as the primary transformation barrier — McKinsey State of Organizations 2026</div></div>
+  </div>
+
+  <div class="slide">
+    <div class="bp-label">Breakpoint 4 — Technology Illusion</div>
+    <h2>Leaders buy a tool and mistake the tool for the system.</h2>
+    <div class="rule"></div>
+    <p class="lead">Every technology cycle sees external pressure to deploy outpace internal capacity to use what's deployed. The technology works; the organization around it doesn't.</p>
+    <div class="grid-2" style="margin-top:0.5rem;">
+      <div class="stat" style="margin-top:0;"><div class="stat-num">1%</div><div class="stat-label">Of organizations describe themselves as AI-mature while 88% are actively deploying — Deloitte 2026</div></div>
+      <div class="stat" style="margin-top:0;"><div class="stat-num">90%</div><div class="stat-label">Of companies conducting AI-driven layoffs had no mature AI systems ready — Forrester Jan 2026</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="bp-label">Breakpoint 5 — Momentum Mirage</div>
+    <h2>Organizations confuse<br>activity with movement.</h2>
+    <div class="rule"></div>
+    <p class="lead">The steering committee keeps meeting. Status reports keep saying green. Cross-functional engagement has dropped by half. Nobody escalates.</p>
+    <p class="body">Momentum is the organization's ability to convert progress into confidence and confidence into continued action. It dies when the people responsible for reinforcing it are pulled to other priorities and no one is watching for drift.</p>
+  </div>
+
+  <div class="slide dark">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>Beneath the breakpoints are four conditions that must be actively maintained.</h2>
+    <div class="rule"></div>
+    <div class="grid-4">
+      <div class="card navy"><div class="card-num">Force 1</div><div class="card-title">Purpose</div><div class="card-body">Shared definition of success, specific enough to fail.</div></div>
+      <div class="card navy"><div class="card-num">Force 2</div><div class="card-title">Commitment</div><div class="card-body">Fuel that keeps work prioritized under pressure.</div></div>
+      <div class="card navy"><div class="card-num">Force 3</div><div class="card-title">Capability</div><div class="card-body">Organizational machinery that allows execution.</div></div>
+      <div class="card navy"><div class="card-num">Force 4</div><div class="card-title">Momentum</div><div class="card-body">Velocity that sustains progress after launch.</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>The complete map.</h2>
+    <div class="rule"></div>
+    <table class="map-table">
+      <thead><tr><th>Breakpoint</th><th>Force at Risk</th><th>Stewardship Needed</th></tr></thead>
+      <tbody>
+        <tr><td>Strategic Disconnection</td><td>Purpose</td><td>Interpretation</td></tr>
+        <tr><td>Incentive Fragmentation</td><td>Commitment</td><td>Ownership</td></tr>
+        <tr><td>Process Friction</td><td>Capability</td><td>Architecture</td></tr>
+        <tr><td>Technology Illusion</td><td>Capability</td><td>Architecture</td></tr>
+        <tr><td>Momentum Mirage</td><td>Momentum</td><td>Reinforcement</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>The breakpoints are not random.<br>They are structural.</h2>
+    <div class="rule"></div>
+    <p class="lead">They surface at the same points in the transformation arc because they are produced by the same underlying conditions.</p>
+    <p class="body">The 70 percent failure rate has been consistent across McKinsey, BCG, KPMG, and Bain for over 15 years. That consistency is not a coincidence. It is the equilibrium produced by the current design of how organizations launch, staff, and measure transformation work.</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>Which of these<br>have you seen?</h2>
+    <div class="rule"></div>
+    <div class="grid-3" style="margin-top:0.5rem;">
+      <div class="card navy"><div class="card-num">01</div><div class="card-title">Strategic Disconnection</div><div class="card-body">Leaders aligned at kickoff. Diverged six months later.</div></div>
+      <div class="card navy"><div class="card-num">02</div><div class="card-title">Incentive Fragmentation</div><div class="card-body">Support that looked real until the tradeoffs arrived.</div></div>
+      <div class="card navy"><div class="card-num">03</div><div class="card-title">Process Friction</div><div class="card-body">Right people, right tools. Work still didn't move.</div></div>
+    </div>
+    <div class="grid-2" style="margin-top:1.5rem; max-width:660px;">
+      <div class="card navy"><div class="card-num">04</div><div class="card-title">Technology Illusion</div><div class="card-body">System deployed. Organization didn't change around it.</div></div>
+      <div class="card navy"><div class="card-num">05</div><div class="card-title">Momentum Mirage</div><div class="card-body">Activity continued. Progress did not.</div></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>Recognizing the breakpoints<br>is not enough.</h2>
+    <div class="rule"></div>
+    <p class="lead">Paper 2 develops the stewardship functions each force requires.<br>Paper 3 addresses why they keep getting skipped.<br>Paper 4 shows what AI does to the dynamic.<br>Paper 5 answers: what do you actually do?</p>
+  </div>
+
+  <div class="slide">
+    <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Paper 1 of 5</div>
+    <h2>The evidence base.</h2>
+    <div class="rule"></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-card-num">~70%</div><div class="stat-card-label">Transformation failure rate — consistent across McKinsey, BCG, KPMG, Bain over 15+ years</div></div>
+      <div class="stat-card"><div class="stat-card-num">29pt</div><div class="stat-card-label">Strategic clarity collapse across one management layer — McKinsey State of Organizations 2026</div></div>
+      <div class="stat-card"><div class="stat-card-num">1%</div><div class="stat-card-label">AI-mature organizations while 88% are actively deploying — Deloitte State of AI 2026</div></div>
+      <div class="stat-card"><div class="stat-card-num">90%</div><div class="stat-card-label">Of AI-driven layoffs had no mature systems ready to fill the gaps — Forrester Jan 2026</div></div>
+    </div>
+  </div>
+
+  <div class="slide dark">
+    <div class="closing-big">The breakpoints<br>are visible.</div>
+    <div class="rule"></div>
+    <p class="lead">Acting on them is the work.</p>
+    <p class="cover-meta" style="margin-top:2rem; color:rgba(255,255,255,0.3);">workthatholds.com &nbsp;·&nbsp; brandonfreitag.com</p>
+  </div>
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 15</div>
+<div class="nav"><button onclick="go(-1)">←</button><button onclick="go(1)">→</button></div>
+<script>
+  const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
+  function show(n) { slides[cur].classList.remove('active'); cur = (n+total)%total; slides[cur].classList.add('active'); document.getElementById('progress').style.width=((cur+1)/total*100)+'%'; document.getElementById('counter').textContent=(cur+1)+' / '+total; }
+  function go(d) { show(cur+d); }
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key===' ')go(1); if(e.key==='ArrowLeft')go(-1); });
+  let tx=0; document.addEventListener('touchstart',e=>tx=e.touches[0].clientX); document.addEventListener('touchend',e=>{ const dx=tx-e.changedTouches[0].clientX; if(Math.abs(dx)>40)go(dx>0?1:-1); });
+  show(0);
+</script>
+</body>
+</html>
