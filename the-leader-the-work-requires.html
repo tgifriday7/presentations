@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Leader the Work Requires — Brandon Freitag</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --navy: #1a3a6b;
+    --navy-dark: #0f2347;
+    --navy-mid: #2a4f8a;
+    --navy-light: #e8eef7;
+    --white: #ffffff;
+    --offwhite: #f7f8fa;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #dde3ed;
+    --accent: #1a3a6b;
+  }
+
+  html { font-size: 18px; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── SLIDE ENGINE ── */
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8vh 10vw 8vh 10vw; padding-top: max(8rem, 16vh);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    background: var(--white);
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .slide.dark {
+    background: var(--navy-dark);
+    color: var(--white);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--navy);
+    transition: width 0.35s ease;
+    z-index: 100;
+  }
+
+  /* ── SLIDE COUNTER ── */
+  .counter {
+    position: fixed;
+    bottom: 1.8rem;
+    right: 2.5rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    z-index: 100;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 0.35rem 0.85rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+
+  .nav button:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .eyebrow {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--navy-mid);
+    margin-bottom: 1.6rem;
+  }
+
+  .slide.dark .eyebrow {
+    color: rgba(255,255,255,0.5);
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.08;
+    color: var(--navy-dark);
+    max-width: 18ch;
+    margin-bottom: 1.4rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .slide.dark h1 { color: var(--white); }
+
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--navy-dark);
+    margin-bottom: 1.1rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: -0.015em;
+  }
+
+  .slide.dark h2 { color: var(--white); }
+
+  h3 {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--navy-mid);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .slide.dark h3 { color: rgba(255,255,255,0.5); }
+
+  .lead {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    line-height: 1.7;
+    color: #374151;
+    max-width: 58ch;
+    margin-bottom: 1rem;
+  }
+
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+
+  .body {
+    font-size: clamp(0.82rem, 1.3vw, 1rem);
+    line-height: 1.85;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  .slide.dark .body { color: rgba(255,255,255,0.6); }
+
+  /* ── RULE ── */
+  .rule {
+    width: 2.5rem;
+    height: 2px;
+    background: var(--navy);
+    margin-bottom: 1.8rem;
+  }
+
+  .slide.dark .rule { background: rgba(255,255,255,0.3); }
+
+  /* ── PHASE BADGE ── */
+  .phase-badge {
+    display: inline-block;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--navy);
+    color: var(--navy);
+    padding: 0.22rem 0.65rem;
+    margin-bottom: 1.4rem;
+    font-weight: 600;
+  }
+
+  /* ── CARDS ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5vw;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .card {
+    border-left: 2px solid var(--border);
+    padding-left: 1.2rem;
+  }
+
+  .card.navy {
+    border-left-color: var(--navy);
+  }
+
+  .slide.dark .card {
+    border-left-color: rgba(255,255,255,0.2);
+  }
+
+  .card-num {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--navy-mid);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  .slide.dark .card-num { color: rgba(255,255,255,0.45); }
+
+  .card-title {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    color: var(--navy-dark);
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .slide.dark .card-title { color: var(--white); }
+
+  .card-body {
+    font-size: clamp(0.72rem, 1.05vw, 0.84rem);
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .slide.dark .card-body { color: rgba(255,255,255,0.55); }
+
+  /* ── STAT ── */
+  .stat {
+    background: var(--navy-light);
+    border-left: 3px solid var(--navy);
+    padding: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    max-width: 50ch;
+  }
+
+  .stat-num {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+    color: var(--navy);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.2rem;
+  }
+
+  .stat-label {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── TABLE ── */
+  .map-table {
+    width: 100%;
+    max-width: 860px;
+    border-collapse: collapse;
+    font-size: clamp(0.68rem, 1.05vw, 0.82rem);
+  }
+
+  .map-table th {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--navy-mid);
+    text-align: left;
+    padding: 0.5rem 1.2rem 0.5rem 0;
+    border-bottom: 2px solid var(--navy-light);
+    font-weight: 600;
+  }
+
+  .map-table td {
+    color: var(--muted);
+    padding: 0.5rem 1.2rem 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.4;
+    vertical-align: top;
+  }
+
+  .map-table td:first-child {
+    color: var(--navy-mid);
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .map-table td:nth-child(2) {
+    color: var(--navy-dark);
+    font-family: 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+  }
+
+  /* ── QUESTION LIST ── */
+  .q-list {
+    list-style: none;
+    max-width: 64ch;
+  }
+
+  .q-list li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: clamp(0.78rem, 1.2vw, 0.92rem);
+    color: var(--muted);
+    line-height: 1.5;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .q-list li:last-child { border-bottom: none; }
+
+  .q-num {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    color: var(--navy-mid);
+    white-space: nowrap;
+    padding-top: 0.18rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  /* ── COVER META ── */
+  .cover-meta {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-top: 2.5rem;
+    text-transform: uppercase;
+  }
+
+  /* ── CLOSING LARGE TEXT ── */
+  .closing-big {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 800;
+    color: var(--navy-light);
+    line-height: 0.95;
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.03em;
+  }
+
+  /* ── LEFT ACCENT BAR ── */
+  .slide::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--navy);
+    opacity: 0.08;
+  }
+
+  .slide.dark::after {
+    background: rgba(255,255,255,0.1);
+    opacity: 1;
+  }
+@media (max-width: 768px) {
+    body { overflow: hidden !important; }
+    .slide { padding: 10vw 6vw 14vw 6vw; justify-content: flex-start; padding-top: 14vw; overflow: hidden; }
+    h1 { font-size: clamp(1.6rem, 7vw, 2.5rem); margin-bottom: 0.8rem; }
+    h2 { font-size: clamp(1.2rem, 5.5vw, 1.8rem); margin-bottom: 0.7rem; }
+    .lead { font-size: clamp(0.82rem, 3.5vw, 1rem); margin-bottom: 0.6rem; }
+    .body { font-size: clamp(0.72rem, 3vw, 0.88rem); }
+    .rule { margin-bottom: 1rem; }
+    .eyebrow { margin-bottom: 0.9rem; }
+    .grid-2, .grid-3, .grid-4, .mech-grid, .two-col, .stat-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+    .stat { margin-top: 0.8rem; padding: 0.7rem 1rem; }
+    .stat-num { font-size: clamp(1.2rem, 5vw, 1.6rem); }
+    .map-table { font-size: 0.65rem; }
+    .map-table th, .map-table td { padding: 0.35rem 0.5rem 0.35rem 0; }
+    .closing-big { font-size: clamp(1.4rem, 7vw, 2.5rem); }
+    #back-link { font-size: 0.55rem; top: 1rem; left: 1.2rem; }
+    .counter { font-size: 0.55rem; bottom: 1.2rem; right: 1.2rem; }
+    .nav { bottom: 1rem; }
+    .nav button { padding: 0.4rem 1rem; font-size: 1rem; }
+    .phase-badge, .bp-label, .force-label, .pressure-label { margin-bottom: 0.8rem; }
+    .q-list li { font-size: 0.72rem; padding: 0.45rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<a id="back-link" href="https://presentations.brandonfreitag.com" style="position:fixed;top:1.4rem;left:2rem;font-family:Helvetica Neue,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#6b7280;text-decoration:none;z-index:100;transition:color 0.2s;">&#8592; All presentations</a>
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: COVER -->
+  <div class="slide dark active">
+    <div class="eyebrow">Why Change Fails &nbsp;&#183;&nbsp; Paper 6 of 6</div>
+    <h1>The Leader the Work Requires</h1>
+    <div class="rule"></div>
+    <p class="lead">What the series didn't reach.</p>
+    <p class="cover-meta"><a href="https://brandonfreitag.com" style="color:inherit;text-decoration:none;">Brandon Freitag</a> &nbsp;&#183;&nbsp; <a href="https://workthatholds.com" style="color:inherit;text-decoration:none;">workthatholds.com</a> &nbsp;&#183;&nbsp; June 2026</p>
+  </div>
+
+  <!-- SLIDE 2: THE STORY -->
+  <div class="slide">
+    <div class="eyebrow">The opening case</div>
+    <h2>Two leaders. The same<br>levers. Different cultures<br>produced. Precisely.</h2>
+    <div class="rule"></div>
+    <p class="lead">Culture follows what the leader actually believes.</p>
+    <p class="body">One CEO inherited a culture built on trust: people surfaced problems early, said what they believed, understood what the organization stood for. The next used the same levers: promotions, funding decisions, how failure was treated, what was said when the truth was uncomfortable. Different beliefs underneath. Different culture produced.</p>
+    <p class="body" style="margin-top:0.9rem;">Not by accident. By design. The lever is always the same. The belief operating it is what differs.</p>
+  </div>
+
+  <!-- SLIDE 3: THE GAP IN THE SERIES -->
+  <div class="slide">
+    <div class="eyebrow">The gap in the series</div>
+    <h2>Five papers described<br>the structural conditions.<br>None of it is sufficient.</h2>
+    <div class="rule"></div>
+    <p class="lead">Everything this series describes depends on a set of beliefs the leader holds.</p>
+    <p class="body">Incentive alignment, delivery redesign, stewardship, readiness, the disciplines that prevent breakpoints: each of these is available only to a leader whose operating system supports them. When that foundation is present, the work holds. When it is absent, the structures get redesigned to serve whatever is actually there.</p>
+    <p class="body" style="margin-top:0.9rem;">This paper is about the operating system. Not what organizations need to do. What leaders need to be.</p>
+  </div>
+
+  <!-- SLIDE 4: THE PRIOR QUESTION -->
+  <div class="slide">
+    <div class="eyebrow">The prior question</div>
+    <h2>Do you believe people<br>fundamentally want<br>to contribute?</h2>
+    <div class="rule"></div>
+    <p class="lead">Douglas McGregor named this in 1960. The labels became shorthand. The distinction did not become less important.</p>
+    <div class="grid-2" style="margin-top:1.2rem;">
+      <div class="card navy">
+        <div class="card-num">Theory X</div>
+        <div class="card-body">People are fundamentally resistant to work. They will do less than required unless compelled. Control is not a failure of leadership. It is its instrument.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Theory Y</div>
+        <div class="card-body">People want to do good work. They underperform primarily when the system fails them. The leader's job is to build conditions for contribution, then get out of the way.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: THEORY X IN PRACTICE -->
+  <div class="slide">
+    <div class="eyebrow">Theory X in practice</div>
+    <h2>You cannot apply your way<br>out of a structural problem.</h2>
+    <div class="rule"></div>
+    <p class="lead">The CRO watching 50% of the sales org miss quota responds with more accountability pressure. More plans. More measurement. More reporting.</p>
+    <p class="body">He does not believe the problem is structural. He believes the problem is insufficient pressure. The lever is fear, applied more precisely.</p>
+    <p class="body" style="margin-top:0.9rem;">The structural explanation says something different: 50% quota attainment is not an accountability failure. It is a signal the quota, the territory, the product-market fit, or the support architecture is broken. More activity, more fear, eventually more turnover.</p>
+    <div class="stat">
+      <div class="stat-num">50%</div>
+      <div class="stat-label">Quota miss is a structural signal, not an accountability failure</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: THREE BEHAVIORS -->
+  <div class="slide dark">
+    <div class="eyebrow">What leaders have to do</div>
+    <h2>Beliefs are necessary.<br>They are not sufficient.</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.8rem;">The test is what happens when honoring those beliefs is expensive.</p>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-num">01</div>
+        <div class="card-title">Absorb the cost of the values under pressure</div>
+        <div class="card-body">Culture is built in the moments when a value is tested by something real.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <div class="card-title">Say the uncomfortable thing first</div>
+        <div class="card-body">The signal runs from the top down. Candor is not a trait you reward. It is one you model.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <div class="card-title">Promote the people who tell you what you need to hear</div>
+        <div class="card-body">Every promotion tells the organization exactly what kind of behavior leads forward.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: ABSORB THE COST -->
+  <div class="slide">
+    <div class="eyebrow">Behavior 01</div>
+    <h2>Culture is built in the<br>moments when a value<br>is tested by something real.</h2>
+    <div class="rule"></div>
+    <p class="lead">The leader who finds a reasonable exception does not build culture. They reveal the actual terms.</p>
+    <p class="body">The organization was watching. They now know what the value means: it applies when it is convenient. Every decision is a data point. The accumulation of those data points over time is the actual culture, regardless of what the values document says.</p>
+    <p class="body" style="margin-top:0.9rem;">The leader who absorbs the cost publicly, without editorializing, demonstrates that the value is not contingent.</p>
+  </div>
+
+  <!-- SLIDE 8: SAY IT FIRST -->
+  <div class="slide">
+    <div class="eyebrow">Behavior 02</div>
+    <h2>The signal runs<br>from the top down.</h2>
+    <div class="rule"></div>
+    <p class="lead">The leader who names the problem before anyone else does gives explicit permission for the people below them to do the same.</p>
+    <p class="body">Leaders who manage perception upward while expecting transparency downward do not get transparency. They get very polished reporting.</p>
+    <p class="body" style="margin-top:0.9rem;">The actual problems travel sideways, or do not travel at all.</p>
+  </div>
+
+  <!-- SLIDE 9: PROMOTE THE RIGHT PEOPLE -->
+  <div class="slide">
+    <div class="eyebrow">Behavior 03</div>
+    <h2>Every promotion tells<br>the organization what<br>behavior leads forward.</h2>
+    <div class="rule"></div>
+    <p class="lead">More powerfully than any stated value or leadership principle, because it is the decision that determines people's futures.</p>
+    <p class="body">Leaders who promote the political operator teach the organization to produce political operators. Leaders who promote the person who surfaced the problem no one wanted to name teach the organization to surface problems.</p>
+    <p class="body" style="margin-top:0.9rem;">Doing this requires promoting someone who made you uncomfortable because they were right, over someone who made you feel confident because they were convenient. Those two people are rarely the same person.</p>
+  </div>
+
+  <!-- SLIDE 10: WHY GOOD LEADERS STILL FAIL -->
+  <div class="slide">
+    <div class="eyebrow">The structural problem</div>
+    <h2>Good leaders still fail<br>to sustain culture at<br>a meaningful rate.</h2>
+    <div class="rule"></div>
+    <p class="lead">Not because their beliefs were wrong. Because the structural environment rewards something else.</p>
+    <div class="grid-2" style="margin-top:1.2rem;">
+      <div class="card navy">
+        <div class="card-num">Quarterly pressure</div>
+        <div class="card-body">The cost of investing in culture is visible immediately. The return is not. Most leaders eventually stop defending it at that cost.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">PE muscle memory</div>
+        <div class="card-body">Leaders who build careers inside PE-backed companies develop specific habits. The playbook does not always fit the next context.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Fear as a tool</div>
+        <div class="card-body">It looks like leadership. It produces activity. It does not produce the conditions where transformation holds.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">No counter-model</div>
+        <div class="card-body">Leaders who have never seen a different approach from lived experience have no internal reference for what it produces.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: JACK WELCH -->
+  <div class="slide">
+    <div class="eyebrow">How the model spreads</div>
+    <h2>Jack Welch did not simply<br>happen to one company.<br>He happened to a generation.</h2>
+    <div class="rule"></div>
+    <p class="lead">Forced ranking. Relentless performance pressure. Cut the bottom ten percent regardless of absolute performance.</p>
+    <p class="body">The model spread because it was legible, attributable, and produced results that could be pointed to in a quarter. It was adopted across industries. The consequences came later.</p>
+    <p class="body" style="margin-top:0.9rem;">GE's long decline is the deferred bill: financial engineering, leadership attrition, institutional brittleness. The bill arrived quietly, diffusely, decades later. The feedback never reached the source. The lesson the system taught was: this works.</p>
+  </div>
+
+  <!-- SLIDE 12: THE ARCHITECTURE THAT PROTECTS CULTURE -->
+  <div class="slide">
+    <div class="eyebrow">What actually works</div>
+    <h2>Three interventions that<br>protect culture structurally.</h2>
+    <div class="rule"></div>
+    <div class="grid-3">
+      <div class="card navy">
+        <div class="card-num">Selection</div>
+        <div class="card-body">The reference call that matters asks: tell me about a time this person told a truth that cost them something.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Governance architecture</div>
+        <div class="card-body">Does the structure protect the CEO when doing the right thing is expensive? Board composition, ownership structure, and incentive cycles all matter.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">The belief audit</div>
+        <div class="card-body">Almost never asked before the hire. It reveals itself in the decisions a leader has made over time when belief was tested by cost.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: COSTCO / PATAGONIA -->
+  <div class="slide">
+    <div class="eyebrow">Structural protection in practice</div>
+    <h2>Culture left unprotected<br>by governance will eventually<br>be reshaped by whoever holds power.</h2>
+    <div class="rule"></div>
+    <p class="lead">The companies that sustain culture over time have structural protection for it.</p>
+    <div class="grid-2" style="margin-top:1.2rem;">
+      <div class="card navy">
+        <div class="card-num">Costco</div>
+        <div class="card-body">Capped margins and above-market wages since founding. This is a governance outcome: board composition, ownership structure, and founder-influenced operating philosophy established to make the culture structurally durable.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Patagonia</div>
+        <div class="card-body">Transferred to a trust structure in 2022 that made shareholder return pressure structurally impossible. Not a culture initiative. A governance decision that removed the structural force that would eventually have compromised the mission.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: THE QUESTION -->
+  <div class="slide dark">
+    <div class="eyebrow">What the analysis cannot reach</div>
+    <h2>Five papers named every<br>structural failure mode.<br>This is what sits underneath.</h2>
+    <div class="rule"></div>
+    <p class="lead">Organizations do not have beliefs. Leaders do. And the organization that gets built, the culture that forms, the transformation that holds or collapses: all of it is downstream of what the person with power actually believes about the people they lead.</p>
+    <p class="body" style="margin-top:1.2rem; font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: rgba(255,255,255,0.75); font-style: italic; line-height: 1.7;">What do you actually believe about the people you lead, and are you willing to act on it when it costs you something?</p>
+  </div>
+
+  <!-- SLIDE 15: CLOSING -->
+  <div class="slide dark">
+    <div class="closing-big">The<br>Foundation.</div>
+    <div class="rule"></div>
+    <p class="lead">Organizations do not have beliefs. Leaders do.</p>
+    <p class="body">Every lever available to a leader is a daily answer to that question: who gets promoted, what gets funded, what failure is treated as, what gets said when the truth is uncomfortable. The accumulation of those answers over time is the culture.</p>
+    <p class="body" style="margin-top:1rem; font-style:italic; color: rgba(255,255,255,0.65);">What do you actually believe about the people you lead, and are you willing to act on it when it costs you something?</p>
+    <p class="cover-meta" style="margin-top:2rem; color: rgba(255,255,255,0.35);">workthatholds.com &nbsp;&#183;&nbsp; brandonfreitag.com</p>
+  </div>
+
+</div><!-- /deck -->
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 15</div>
+<div class="nav">
+  <button onclick="go(-1)">&#8592;</button>
+  <button onclick="go(1)">&#8594;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = (n + total) % total;
+    slides[cur].classList.add('active');
+    document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
+    document.getElementById('counter').textContent = (cur + 1) + ' / ' + total;
+  }
+
+  function go(dir) { show(cur + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) go(dx > 0 ? 1 : -1);
+  });
+
+  show(0); updateBackLink();
+</script>
+</body>
+</html>
