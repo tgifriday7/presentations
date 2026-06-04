@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Change Fails — Diagnostic Framework</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #1a3a6b;
+    --navy-dark: #0f2347;
+    --navy-mid: #2a4f8a;
+    --navy-light: #e8eef7;
+    --navy-faint: #f3f6fb;
+    --white: #ffffff;
+    --muted: #6b7280;
+    --border: #dde3ed;
+    --accent: #c8392b;
+  }
+  body {
+    background: var(--white);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--navy-dark);
+    padding: 3rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  /* Header */
+  .header { margin-bottom: 2.5rem; }
+  .eyebrow { font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--navy-mid); font-weight: 700; margin-bottom: 0.6rem; }
+  .title { font-size: 2.2rem; font-weight: 800; color: var(--navy-dark); letter-spacing: -0.025em; line-height: 1; margin-bottom: 0.5rem; }
+  .subtitle { font-size: 0.82rem; color: var(--muted); max-width: 60ch; line-height: 1.6; }
+  .header-rule { width: 3rem; height: 3px; background: var(--navy); margin: 1rem 0; }
+
+  /* Top stat bar */
+  .stat-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--border); margin-bottom: 2rem; }
+  .stat-item { padding: 0.9rem 1.2rem; border-right: 1px solid var(--border); }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-size: 1.5rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; line-height: 1; margin-bottom: 0.25rem; }
+  .stat-label { font-size: 0.6rem; color: var(--muted); line-height: 1.4; letter-spacing: 0.03em; }
+
+  /* Main grid */
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .section-label { font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700; color: var(--white); background: var(--navy); padding: 0.25rem 0.6rem; display: inline-block; margin-bottom: 0.8rem; }
+  .section-label.explain { background: var(--navy-mid); }
+  .section-label.act { background: #1a5a3a; }
+
+  /* Breakpoints column */
+  .bp-col { }
+  .bp-item { border-left: 3px solid var(--navy); padding: 0.65rem 0.9rem; margin-bottom: 0.6rem; background: var(--navy-faint); }
+  .bp-item:last-child { margin-bottom: 0; }
+  .bp-name { font-size: 0.7rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 0.2rem; }
+  .bp-tag { font-size: 0.58rem; color: var(--muted); line-height: 1.4; }
+  .force-badge { display: inline-block; font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; border: 1px solid var(--navy); color: var(--navy); padding: 0.1rem 0.4rem; margin-top: 0.3rem; }
+
+  /* Forces column */
+  .forces-col { }
+  .force-block { border: 1px solid var(--border); padding: 0.75rem 1rem; margin-bottom: 0.6rem; }
+  .force-block:last-child { margin-bottom: 0; }
+  .force-name { font-size: 0.8rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 0.15rem; }
+  .force-def { font-size: 0.62rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.35rem; }
+  .stewardship-row { font-size: 0.58rem; color: var(--navy-mid); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .stewardship-label { color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .self-check { font-size: 0.6rem; color: var(--muted); font-style: italic; margin-top: 0.3rem; line-height: 1.45; border-top: 1px solid var(--border); padding-top: 0.3rem; }
+
+  /* Act column */
+  .act-col { }
+  .phase-block { border: 1px solid var(--border); padding: 0.75rem 1rem; margin-bottom: 0.6rem; }
+  .phase-block:last-child { margin-bottom: 0; }
+  .phase-name { font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: #1a5a3a; margin-bottom: 0.4rem; }
+  .disc-list { list-style: none; }
+  .disc-list li { font-size: 0.62rem; color: var(--navy-dark); padding: 0.2rem 0; border-bottom: 1px solid var(--border); line-height: 1.45; }
+  .disc-list li:last-child { border-bottom: none; }
+  .disc-num { display: inline-block; font-weight: 700; color: var(--navy); width: 1.4rem; }
+
+  /* Why it keeps happening row */
+  .why-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.25rem; }
+  .why-item { border-top: 3px solid var(--navy-mid); padding-top: 0.7rem; }
+  .why-name { font-size: 0.68rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 0.25rem; }
+  .why-body { font-size: 0.6rem; color: var(--muted); line-height: 1.55; }
+
+  /* AI row */
+  .ai-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .ai-block { background: var(--navy-dark); color: var(--white); padding: 1rem 1.25rem; }
+  .ai-label { font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); font-weight: 600; margin-bottom: 0.5rem; }
+  .ai-headline { font-size: 0.82rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; line-height: 1.3; }
+  .ai-body { font-size: 0.6rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+  /* Foundation row */
+  .foundation-row { border: 2px solid var(--navy); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+  .found-label { font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700; color: var(--navy-mid); margin-bottom: 0.6rem; }
+  .found-question { font-size: 1rem; font-weight: 700; color: var(--navy-dark); line-height: 1.4; margin-bottom: 0.6rem; font-style: italic; }
+  .found-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 0.6rem; }
+  .found-item { }
+  .found-item-label { font-size: 0.6rem; font-weight: 700; color: var(--navy); margin-bottom: 0.2rem; }
+  .found-item-body { font-size: 0.6rem; color: var(--muted); line-height: 1.5; }
+
+  /* Footer */
+  .footer { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .footer-left { }
+  .footer-brand { font-size: 0.65rem; font-weight: 700; color: var(--navy-dark); letter-spacing: -0.01em; }
+  .footer-url { font-size: 0.55rem; color: var(--muted); letter-spacing: 0.08em; margin-top: 0.15rem; }
+  .footer-right { font-size: 0.52rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; text-align: right; }
+
+  @media print {
+    body { padding: 1.5cm 2cm; }
+    .ai-block { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .foundation-row { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 900px) {
+    body { padding: 2rem 1.5rem; }
+    .main-grid { grid-template-columns: 1fr; }
+    .why-row { grid-template-columns: 1fr; }
+    .ai-row { grid-template-columns: 1fr; }
+    .found-row { grid-template-columns: 1fr; }
+    .stat-bar { grid-template-columns: 1fr 1fr; }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(3) { border-top: 1px solid var(--border); }
+    .stat-item:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+    .title { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="eyebrow">Brandon Freitag &nbsp;·&nbsp; workthatholds.com</div>
+    <div class="title">Why Change Fails</div>
+    <div class="header-rule"></div>
+    <div class="subtitle">A diagnostic framework for organizational transformation. The five breakpoints, four forces, and the conditions that determine whether change holds or collapses.</div>
+  </div>
+
+  <!-- Stat bar -->
+  <div class="stat-bar">
+    <div class="stat-item">
+      <div class="stat-num">~70%</div>
+      <div class="stat-label">Transformation failure rate — consistent across McKinsey, BCG, KPMG, Bain for 15+ years</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">29pt</div>
+      <div class="stat-label">Strategic clarity collapse across one management layer — McKinsey State of Organizations 2026</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">1%</div>
+      <div class="stat-label">Organizations that are AI-mature while 88% are actively deploying — Deloitte 2026</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4 yrs</div>
+      <div class="stat-label">Average C-suite tenure vs. 18–36 months for design decisions to show consequences</div>
+    </div>
+  </div>
+
+  <!-- Main three-column grid -->
+  <div class="main-grid">
+
+    <!-- Column 1: Diagnose — Breakpoints -->
+    <div class="bp-col">
+      <span class="section-label">Diagnose · Papers 1–2</span>
+      <div class="bp-item">
+        <div class="bp-name">1. Strategic Disconnection</div>
+        <div class="bp-tag">Looks like alignment. Leaders leave the kickoff nodding. Diverged six months later.</div>
+        <span class="force-badge">Purpose at risk</span>
+      </div>
+      <div class="bp-item">
+        <div class="bp-name">2. Incentive Fragmentation</div>
+        <div class="bp-tag">The most dangerous resistance looks like support — until the real tradeoffs arrive.</div>
+        <span class="force-badge">Commitment at risk</span>
+      </div>
+      <div class="bp-item">
+        <div class="bp-name">3. Process Friction</div>
+        <div class="bp-tag">Skilled people inside broken handoffs. Strategy negotiated, not executed.</div>
+        <span class="force-badge">Capability at risk</span>
+      </div>
+      <div class="bp-item">
+        <div class="bp-name">4. Technology Illusion</div>
+        <div class="bp-tag">Leaders buy a tool and mistake the tool for the system. Technology works; organization doesn't.</div>
+        <span class="force-badge">Capability at risk</span>
+      </div>
+      <div class="bp-item">
+        <div class="bp-name">5. Momentum Mirage</div>
+        <div class="bp-tag">Activity continues. Progress does not. No one is watching for drift.</div>
+        <span class="force-badge">Momentum at risk</span>
+      </div>
+    </div>
+
+    <!-- Column 2: Four Forces + Stewardship -->
+    <div class="forces-col">
+      <span class="section-label explain">Four Forces · Paper 2</span>
+      <div class="force-block">
+        <div class="force-name">Purpose</div>
+        <div class="force-def">Shared definition of success — specific enough to fail. Not a values statement.</div>
+        <div class="stewardship-row">Stewardship: <span class="stewardship-label">Interpretation — translating enterprise outcomes into team-level success, continuously</span></div>
+        <div class="self-check">Who is actively maintaining the definition of success — not just announcing it?</div>
+      </div>
+      <div class="force-block">
+        <div class="force-name">Commitment</div>
+        <div class="force-def">The designed priority that holds when tradeoffs appear. Read by where money and time actually go under pressure.</div>
+        <div class="stewardship-row">Stewardship: <span class="stewardship-label">Ownership — named decision rights; incentive conflicts resolved before kickoff</span></div>
+        <div class="self-check">For every team whose behavior has to change, do their metrics reward the new state?</div>
+      </div>
+      <div class="force-block">
+        <div class="force-name">Capability</div>
+        <div class="force-def">Organizational machinery — how work moves, where decisions live, who owns the space between functions.</div>
+        <div class="stewardship-row">Stewardship: <span class="stewardship-label">Architecture — owning how work flows across boundaries</span></div>
+        <div class="self-check">If you mapped how work actually flows today, would it match the formal process?</div>
+      </div>
+      <div class="force-block">
+        <div class="force-name">Momentum</div>
+        <div class="force-def">The ability to convert progress into confidence and confidence into continued action.</div>
+        <div class="stewardship-row">Stewardship: <span class="stewardship-label">Reinforcement — named owner, written stall definition, authority to intervene</span></div>
+        <div class="self-check">Can you name the person who owns momentum six months after launch?</div>
+      </div>
+    </div>
+
+    <!-- Column 3: Act — Seven Disciplines -->
+    <div class="act-col">
+      <span class="section-label act">Act · Paper 5</span>
+      <div class="phase-block">
+        <div class="phase-name">Phase 1 — Anchor: What Is True</div>
+        <ul class="disc-list">
+          <li><span class="disc-num">1.</span>Define the outcome specific enough to fail — in language every leader describes the same way</li>
+          <li><span class="disc-num">2.</span>Resolve incentive conflicts before the announcement</li>
+        </ul>
+      </div>
+      <div class="phase-block">
+        <div class="phase-name">Phase 2 — Build: The Machinery</div>
+        <ul class="disc-list">
+          <li><span class="disc-num">3.</span>Redesign the delivery system before you ask it to carry new work</li>
+          <li><span class="disc-num">4.</span>Test organizational readiness before you deploy the technology</li>
+        </ul>
+      </div>
+      <div class="phase-block">
+        <div class="phase-name">Phase 3 — Sustain: What Holds</div>
+        <ul class="disc-list">
+          <li><span class="disc-num">5.</span>Build the momentum system before you need it</li>
+          <li><span class="disc-num">6.</span>Sequence for real value inside 90 days — not a pilot, a delivered result</li>
+          <li><span class="disc-num">7.</span>Design for adoption, not announcement — start with those ready to move</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Why it keeps happening -->
+  <div class="why-row">
+    <div class="why-item">
+      <div class="section-label explain" style="margin-bottom:0.6rem;">Explain · Paper 3</div>
+      <div class="why-name">Skill Gravity</div>
+      <div class="why-body">Senior executives are experts in things that produce visible results quickly. Organizational design is slow, structural, and has no short-term signal. The layer that should own design most is the layer most consumed by upward management.</div>
+    </div>
+    <div class="why-item">
+      <div class="section-label explain" style="margin-bottom:0.6rem;">Explain · Paper 3</div>
+      <div class="why-name">The Feedback Gap</div>
+      <div class="why-body">Average C-suite tenure: ~4 years. Design failures visible in 18–36 months. The leader who skips the design work will rarely be in the role when the transformation stalls. No corrective feedback loop. Same choices made again.</div>
+    </div>
+    <div class="why-item">
+      <div class="section-label explain" style="margin-bottom:0.6rem;">Explain · Paper 3</div>
+      <div class="why-name">Career Calculus</div>
+      <div class="why-body">Real transformation means visible risk. Softer alternatives manage the pressure without creating the conflict: a reorg that signals decisiveness, a technology investment that demonstrates activity, a comms campaign that updates language without changing the model.</div>
+    </div>
+  </div>
+
+  <!-- AI row -->
+  <div class="ai-row">
+    <div class="ai-block">
+      <div class="ai-label">Paper 4 — The AI Mirror</div>
+      <div class="ai-headline">AI doesn't change the dynamic. It compresses the timeline.</div>
+      <div class="ai-body">A vague strategic direction that took six months to surface in human execution can surface in six days in agentic execution. When organizations eliminate management layers without explicitly reassigning stewardship, the four forces lose their carriers. The breakpoints don't disappear — they accelerate. AI is the most honest diagnostic a transformation team has ever had. It tells the truth about what was already broken.</div>
+    </div>
+    <div class="ai-block" style="background: var(--navy-mid);">
+      <div class="ai-label">The Critical Distinction</div>
+      <div class="ai-headline">AI absorbs routing. It does not absorb stewardship.</div>
+      <div class="ai-body">Interpretation, ownership, judgment, escalation, ongoing adjustment — knowing when the answer is technically coherent but strategically wrong. When organizations reduce management layers without rebuilding stewardship elsewhere, the forces go uncarried. The question is not whether layers should shrink. It's what work those layers were actually carrying.</div>
+    </div>
+  </div>
+
+  <!-- Foundation -->
+  <div class="foundation-row">
+    <div class="found-label">Paper 6 — The Leader the Work Requires · The Operating System</div>
+    <div class="found-question">"What do you actually believe about the people you lead — and are you willing to act on it when it costs you something?"</div>
+    <div class="found-row">
+      <div class="found-item">
+        <div class="found-item-label">The Prior Question</div>
+        <div class="found-item-body">Every framework in this series assumes a leader who believes people fundamentally want to contribute and underperform primarily when the system fails them. Without that, the same structures are built differently and the levers used to entirely different effect.</div>
+      </div>
+      <div class="found-item">
+        <div class="found-item-label">The Three Tests</div>
+        <div class="found-item-body">Absorb the cost of values under pressure. Say the uncomfortable thing first. Promote the person who told you the truth, over the person who made you feel confident. These distinguish leaders who build culture from leaders who perform it.</div>
+      </div>
+      <div class="found-item">
+        <div class="found-item-label">What Protects Culture</div>
+        <div class="found-item-body">Culture left unprotected by governance will eventually be reshaped by whoever holds power. Structural protection: board composition, ownership structure, compensation tied to multi-year outcomes, selection processes designed to find the belief — not just describe it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-brand">Brandon Freitag</div>
+      <div class="footer-url">workthatholds.com &nbsp;·&nbsp; brandonfreitag.com</div>
+    </div>
+    <div class="footer-right">
+      Why Change Fails series · 2026<br>
+      Six papers · workthatholds.com/why-change-fails
+    </div>
+  </div>
+
+</body>
+</html>

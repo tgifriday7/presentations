@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Change Fails — Brandon Freitag</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --navy: #1a3a6b; --navy-dark: #0f2347; --navy-mid: #2a4f8a; --navy-light: #e8eef7; --white: #ffffff; --text: #1a1a2e; --muted: #6b7280; --border: #dde3ed; }
+  html { font-size: 18px; }
+  body { background: var(--white); color: var(--text); font-family: 'Georgia', serif; overflow: hidden; height: 100vh; width: 100vw; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 8vh 10vw 8vh 10vw; padding-top: max(8rem, 16vh); opacity: 0; pointer-events: none; transition: opacity 0.35s ease; background: var(--white); }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .slide.dark { background: var(--navy-dark); color: var(--white); }
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--navy); transition: width 0.35s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
+  .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
+  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Helvetica Neue', sans-serif; }
+  .nav button.on-dark { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.45); }
+  .nav button.on-dark:hover { border-color: rgba(255,255,255,0.8); color: rgba(255,255,255,0.9); }
+  .nav button:hover { border-color: var(--navy); color: var(--navy); }
+  .eyebrow { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.6rem; font-weight: 600; }
+  .slide.dark .eyebrow { color: rgba(255,255,255,0.45); }
+  h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.08; color: var(--navy-dark); max-width: 22ch; margin-bottom: 1.4rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.02em; }
+  .slide.dark h1 { color: var(--white); }
+  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.15; color: var(--navy-dark); margin-bottom: 1.1rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.015em; }
+  .slide.dark h2 { color: var(--white); }
+  h3 { font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 0.5rem; font-weight: 600; }
+  .slide.dark h3 { color: rgba(255,255,255,0.45); }
+  .lead { font-size: clamp(0.95rem, 1.7vw, 1.2rem); line-height: 1.7; color: #374151; max-width: 58ch; margin-bottom: 1rem; }
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+  .body { font-size: clamp(0.8rem, 1.25vw, 0.95rem); line-height: 1.85; color: var(--muted); max-width: 62ch; }
+  .slide.dark .body { color: rgba(255,255,255,0.6); }
+  .rule { width: 2.5rem; height: 2px; background: var(--navy); margin-bottom: 1.8rem; }
+  .slide.dark .rule { background: rgba(255,255,255,0.3); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; width: 100%; max-width: 1000px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5vw; width: 100%; max-width: 1000px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; width: 100%; max-width: 1000px; }
+  .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.5vw; width: 100%; max-width: 1100px; }
+  .card { border-left: 2px solid var(--border); padding-left: 1.2rem; }
+  .card.navy { border-left-color: var(--navy); }
+  .slide.dark .card { border-left-color: rgba(255,255,255,0.2); }
+  .card-num { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--navy-mid); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .slide.dark .card-num { color: rgba(255,255,255,0.4); }
+  .card-title { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(0.82rem, 1.3vw, 0.95rem); color: var(--navy-dark); margin-bottom: 0.35rem; font-weight: 600; line-height: 1.3; }
+  .slide.dark .card-title { color: var(--white); }
+  .card-body { font-size: clamp(0.7rem, 1vw, 0.82rem); color: var(--muted); line-height: 1.65; }
+  .slide.dark .card-body { color: rgba(255,255,255,0.55); }
+  .stat { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 1rem 1.5rem; margin-top: 1.5rem; max-width: 50ch; }
+  .stat-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--navy); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+  .stat-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
+  .map-table { width: 100%; max-width: 900px; border-collapse: collapse; font-size: clamp(0.66rem, 1vw, 0.8rem); }
+  .map-table th { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--navy-mid); text-align: left; padding: 0.5rem 1rem 0.5rem 0; border-bottom: 2px solid var(--navy-light); font-weight: 600; }
+  .map-table td { color: var(--muted); padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--border); line-height: 1.4; vertical-align: top; }
+  .map-table td:first-child { color: var(--navy-mid); font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+  .map-table td:nth-child(2) { color: var(--navy-dark); font-family: 'Helvetica Neue', sans-serif; font-weight: 500; }
+  .closing-big { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 800; color: rgba(255,255,255,0.22); line-height: 0.95; margin-bottom: 1.2rem; letter-spacing: -0.03em; }
+  .cover-meta { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--muted); margin-top: 2.5rem; text-transform: uppercase; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5vw; width: 100%; max-width: 1000px; margin-top: 0.5rem; }
+  .stat-card { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 0.8rem 1rem; }
+  .stat-card-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.1rem, 2vw, 1.6rem); color: var(--navy); font-weight: 700; margin-bottom: 0.2rem; }
+  .stat-card-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; color: var(--muted); line-height: 1.45; }
+  .paper-row { display: flex; align-items: flex-start; gap: 1.5rem; padding: 0.9rem 0; border-bottom: 1px solid var(--border); max-width: 860px; }
+  .paper-row:last-child { border-bottom: none; }
+  .paper-num { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy); font-weight: 600; min-width: 4.5rem; padding-top: 0.15rem; }
+  .paper-title { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(0.8rem, 1.2vw, 0.9rem); color: var(--navy-dark); font-weight: 600; margin-bottom: 0.2rem; }
+  .paper-desc { font-size: clamp(0.68rem, 0.95vw, 0.78rem); color: var(--muted); line-height: 1.55; }
+  .slide.dark .paper-row { border-bottom-color: rgba(255,255,255,0.1); }
+  .slide.dark .paper-num { color: rgba(255,255,255,0.4); }
+  .slide.dark .paper-title { color: var(--white); }
+  .slide.dark .paper-desc { color: rgba(255,255,255,0.55); }
+  .arc-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; padding: 0.2rem 0.7rem; display: inline-block; margin-bottom: 1rem; }
+  .arc-diagnose { border: 1px solid var(--navy); color: var(--navy); }
+  .arc-explain { border: 1px solid #7c9fd4; color: #2a4f8a; }
+  .arc-act { border: 1px solid #2a8a5a; color: #1a5a3a; }
+  .q-list { list-style: none; max-width: 64ch; }
+  .q-list li { font-size: clamp(0.78rem, 1.15vw, 0.9rem); color: var(--muted); padding: 0.55rem 0; border-bottom: 1px solid var(--border); line-height: 1.6; font-family: 'Georgia', serif; font-style: italic; }
+  .q-list li:last-child { border-bottom: none; }
+  .slide.dark .q-list li { color: rgba(255,255,255,0.65); border-bottom-color: rgba(255,255,255,0.1); }
+  @media (max-width: 768px) {
+    body { overflow: hidden !important; }
+    .slide { padding: 10vw 6vw 14vw 6vw; justify-content: flex-start; padding-top: 14vw; overflow: hidden; }
+    h1 { font-size: clamp(1.6rem, 7vw, 2.5rem); margin-bottom: 0.8rem; }
+    h2 { font-size: clamp(1.2rem, 5.5vw, 1.8rem); margin-bottom: 0.7rem; }
+    .lead { font-size: clamp(0.82rem, 3.5vw, 1rem); margin-bottom: 0.6rem; }
+    .body { font-size: clamp(0.72rem, 3vw, 0.88rem); }
+    .rule { margin-bottom: 1rem; }
+    .eyebrow { margin-bottom: 0.9rem; }
+    .grid-2, .grid-3, .grid-4, .grid-6, .stat-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+    .stat { margin-top: 0.8rem; padding: 0.7rem 1rem; }
+    .stat-num { font-size: clamp(1.2rem, 5vw, 1.6rem); }
+    .map-table { font-size: 0.65rem; }
+    .map-table th, .map-table td { padding: 0.35rem 0.5rem 0.35rem 0; }
+    .closing-big { font-size: clamp(1.4rem, 7vw, 2.5rem); }
+    #back-link { font-size: 0.55rem; top: 1rem; left: 1.2rem; }
+    .counter { font-size: 0.55rem; bottom: 1.2rem; right: 1.2rem; }
+    .nav { bottom: 1rem; }
+    .nav button { padding: 0.4rem 1rem; font-size: 1rem; }
+    .paper-row { flex-direction: column; gap: 0.4rem; }
+    .paper-num { min-width: auto; }
+  }
+</style>
+</head>
+<body>
+<a id="back-link" href="https://presentations.brandonfreitag.com" style="position:fixed;top:1.4rem;left:2rem;font-family:Helvetica Neue,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#6b7280;text-decoration:none;z-index:100;transition:color 0.2s;">← All presentations</a>
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: Cover -->
+  <div class="slide active dark">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Series Overview</div>
+    <h1>Why Change Fails</h1>
+    <div class="rule"></div>
+    <p class="lead">Six papers. One argument.<br>Why organizational transformation fails — and what it takes to make change hold.</p>
+    <p class="cover-meta" style="color:rgba(255,255,255,0.3);"><a href="https://brandonfreitag.com" style="color:inherit;text-decoration:none;">Brandon Freitag</a> &nbsp;·&nbsp; <a href="https://workthatholds.com" style="color:inherit;text-decoration:none;">workthatholds.com</a> &nbsp;·&nbsp; 2026</p>
+  </div>
+
+  <!-- SLIDE 2: The one number -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; The Problem</div>
+    <h2>Seventy percent of organizational transformations fail.</h2>
+    <div class="rule"></div>
+    <p class="lead">That number has been consistent across McKinsey, BCG, KPMG, and Bain for over fifteen years.</p>
+    <p class="body">It is not a coincidence. It is not bad luck. It is not a knowledge gap — leaders know what transformation requires. The 70 percent failure rate is the equilibrium produced by the current design of how organizations launch, staff, and sustain change. This series is about that design.</p>
+    <div class="stat"><div class="stat-num">~70%</div><div class="stat-label">Transformation failure rate — consistent across McKinsey, BCG, KPMG, Bain for 15+ years</div></div>
+  </div>
+
+  <!-- SLIDE 3: The argument in one frame -->
+  <div class="slide dark">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; The Argument</div>
+    <h2>The argument runs in three movements.</h2>
+    <div class="rule"></div>
+    <div class="grid-3">
+      <div class="card navy">
+        <div class="card-num">Diagnose</div>
+        <div class="card-title">What goes wrong, and why</div>
+        <div class="card-body">Five breakpoints appear in every failed transformation. Beneath them are four forces. Each force requires stewardship. Papers 1 &amp; 2.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Explain</div>
+        <div class="card-title">Why it keeps happening</div>
+        <div class="card-body">Skipping the design work is individually rational. AI accelerates what was already broken. The structural environment rewards the wrong things. Papers 3 &amp; 4.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Act</div>
+        <div class="card-title">What actually changes it</div>
+        <div class="card-body">Seven disciplines before the launch. And the operating system beneath all of it: what the leader actually believes about people. Papers 5 &amp; 6.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Six papers at a glance -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Six Papers</div>
+    <h2>Six papers. A complete arc.</h2>
+    <div class="rule"></div>
+    <div class="paper-row"><div class="paper-num">Paper 1</div><div><div class="paper-title">Five Breakpoints Leaders Miss</div><div class="paper-desc">The five places where transformations predictably fail — and the four forces beneath each one.</div></div></div>
+    <div class="paper-row"><div class="paper-num">Paper 2</div><div><div class="paper-title">The Stewardship Gap</div><div class="paper-desc">Why transformations keep losing force after leaders have already named the problem.</div></div></div>
+    <div class="paper-row"><div class="paper-num">Paper 3</div><div><div class="paper-title">Designed to Stall</div><div class="paper-desc">Why the system rewards the choices that cause transformation to fail — and six mechanisms that change the structure.</div></div></div>
+    <div class="paper-row"><div class="paper-num">Paper 4</div><div><div class="paper-title">The AI Mirror</div><div class="paper-desc">Agentic AI compresses the timeline and tells the truth about what was already broken.</div></div></div>
+    <div class="paper-row"><div class="paper-num">Paper 5</div><div><div class="paper-title">Before It Breaks</div><div class="paper-desc">Seven disciplines. Three phases. What leaders who get transformation right do before anyone is watching.</div></div></div>
+    <div class="paper-row"><div class="paper-num">Paper 6</div><div><div class="paper-title">The Leader the Work Requires</div><div class="paper-desc">The operating system beneath everything — what the leader believes about people, and whether they act on it under pressure.</div></div></div>
+  </div>
+
+  <!-- SLIDE 5: The Five Breakpoints -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 1</div>
+    <h2>Five breakpoints.<br>All of them structural.</h2>
+    <div class="rule"></div>
+    <div class="grid-3" style="margin-bottom:1.2rem;">
+      <div class="card navy"><div class="card-num">01</div><div class="card-title">Strategic Disconnection</div><div class="card-body">Looks like alignment. Leaders leave the kickoff nodding. Six months later, diverged.</div></div>
+      <div class="card navy"><div class="card-num">02</div><div class="card-title">Incentive Fragmentation</div><div class="card-body">The most dangerous resistance looks like support until the real tradeoffs arrive.</div></div>
+      <div class="card navy"><div class="card-num">03</div><div class="card-title">Process Friction</div><div class="card-body">Skilled people working inside broken handoffs. Strategy negotiated, not executed.</div></div>
+    </div>
+    <div class="grid-2" style="max-width:660px;">
+      <div class="card navy"><div class="card-num">04</div><div class="card-title">Technology Illusion</div><div class="card-body">Leaders buy a tool and mistake the tool for the system.</div></div>
+      <div class="card navy"><div class="card-num">05</div><div class="card-title">Momentum Mirage</div><div class="card-body">Activity continues. Progress does not. No one is watching for drift.</div></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: The Four Forces -->
+  <div class="slide dark">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 1 &amp; 2</div>
+    <h2>Beneath the breakpoints are four forces that must be actively maintained.</h2>
+    <div class="rule"></div>
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+      <div class="card navy"><div class="card-num">Force 1</div><div class="card-title">Purpose</div><div class="card-body">Shared definition of success — specific enough to fail.</div></div>
+      <div class="card navy"><div class="card-num">Force 2</div><div class="card-title">Commitment</div><div class="card-body">The designed priority that holds when tradeoffs appear.</div></div>
+      <div class="card navy"><div class="card-num">Force 3</div><div class="card-title">Capability</div><div class="card-body">Organizational machinery — how work moves, where decisions live.</div></div>
+      <div class="card navy"><div class="card-num">Force 4</div><div class="card-title">Momentum</div><div class="card-body">The ability to convert progress into confidence and confidence into continued action.</div></div>
+    </div>
+    <p class="body">Each force requires stewardship. Most transformations launch with all four forces intact. They fail because no one is responsible for sustaining them when operating pressure arrives.</p>
+  </div>
+
+  <!-- SLIDE 7: The Stewardship Map -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 2</div>
+    <h2>The complete map.</h2>
+    <div class="rule"></div>
+    <table class="map-table">
+      <thead><tr><th>Breakpoint</th><th>Force at Risk</th><th>Stewardship Needed</th><th>What It Looks Like</th></tr></thead>
+      <tbody>
+        <tr><td>Strategic Disconnection</td><td>Purpose</td><td>Interpretation</td><td>Translating enterprise outcomes into team-level success definitions, continuously</td></tr>
+        <tr><td>Incentive Fragmentation</td><td>Commitment</td><td>Ownership</td><td>Named decision rights; incentive conflicts resolved before the announcement</td></tr>
+        <tr><td>Process Friction</td><td>Capability</td><td>Architecture</td><td>Owning how work moves across boundaries — the space between functions</td></tr>
+        <tr><td>Technology Illusion</td><td>Capability</td><td>Architecture</td><td>Readiness before deployment — process, strategy, and capability</td></tr>
+        <tr><td>Momentum Mirage</td><td>Momentum</td><td>Reinforcement</td><td>Named owner; written stall definition; authority to intervene</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SLIDE 8: Why it keeps happening -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 3</div>
+    <h2>Skipping the design work<br>is individually rational.</h2>
+    <div class="rule"></div>
+    <div class="grid-3">
+      <div class="card navy">
+        <div class="card-num">Skill Gravity</div>
+        <div class="card-title">Leaders do what they're expert at</div>
+        <div class="card-body">Customer engagement, operational firefighting. Organizational design is slow, structural, produces no short-term signal anyone tracks.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">The Feedback Gap</div>
+        <div class="card-title">Consequences arrive after they've left</div>
+        <div class="card-body">Average C-suite tenure: 4 years. Design failures visible in 18–36 months. The leader who skips the work is rarely in the role when the transformation stalls.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Career Calculus</div>
+        <div class="card-title">Real transformation is visible risk</div>
+        <div class="card-body">Political conflict, short-term disruption, association with failure. Softer alternatives manage the pressure without creating the conflict.</div>
+      </div>
+    </div>
+    <p class="body" style="margin-top:1.5rem;">The strongest predictor of whether a leader does the design work is whether the structure penalizes skipping it — not whether they understand it.</p>
+  </div>
+
+  <!-- SLIDE 9: AI Mirror -->
+  <div class="slide dark">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 4</div>
+    <h2>AI doesn't change the core dynamic.<br>It compresses the timeline.</h2>
+    <div class="rule"></div>
+    <p class="lead">AI absorbs routing. It does not absorb stewardship.</p>
+    <div class="grid-2" style="margin-top:0.5rem;">
+      <div class="card navy">
+        <div class="card-num">What AI exposes</div>
+        <div class="card-title">The diagnostic function</div>
+        <div class="card-body">A vague strategic direction that took six months to surface in human execution can surface in six days in agentic execution. AI tells the truth about the organization around it.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">The missed distinction</div>
+        <div class="card-title">Routing vs. stewardship</div>
+        <div class="card-body">When organizations eliminate management layers without explicitly reassigning stewardship, the four forces lose their carriers. The breakpoints don't disappear — they accelerate.</div>
+      </div>
+    </div>
+    <p class="body" style="margin-top:1.5rem;">Organizations whose four forces were already stewarded absorb AI more effectively. Organizations whose forces were not stewarded discover the gaps faster than they expected.</p>
+  </div>
+
+  <!-- SLIDE 10: Before It Breaks -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 5</div>
+    <h2>Seven disciplines.<br>Three phases. Before anyone is watching.</h2>
+    <div class="rule"></div>
+    <div class="grid-3">
+      <div class="card navy">
+        <div class="card-num">Phase 1 — Anchor</div>
+        <div class="card-title">What is true</div>
+        <div class="card-body">1. Define the outcome specific enough to fail.<br>2. Resolve incentive conflicts before the announcement.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Phase 2 — Build</div>
+        <div class="card-title">The machinery</div>
+        <div class="card-body">3. Redesign the delivery system before you ask it to carry new work.<br>4. Test organizational readiness before you deploy the technology.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Phase 3 — Sustain</div>
+        <div class="card-title">What holds</div>
+        <div class="card-body">5. Build the momentum system before you need it.<br>6. Sequence for value inside 90 days.<br>7. Design for adoption, not announcement.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: The operating system -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 6</div>
+    <h2>Beneath everything in this series<br>is one prior question.</h2>
+    <div class="rule"></div>
+    <p class="lead">Do you believe that people fundamentally want to contribute — and that they underperform primarily when the system fails them?</p>
+    <p class="body">Or do you believe that people need to be managed into performance through accountability and consequences? These two positions produce different organizations. They use the same levers to entirely different effect. Every framework in this series only holds in hands that have answered this question honestly.</p>
+    <div class="stat"><div class="stat-num">Theory X vs. Y</div><div class="stat-label">McGregor, 1960. The labels became shorthand. The underlying distinction has not become less important.</div></div>
+  </div>
+
+  <!-- SLIDE 12: What leaders must be willing to do -->
+  <div class="slide dark">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Paper 6</div>
+    <h2>Beliefs are necessary.<br>They are not sufficient.</h2>
+    <div class="rule"></div>
+    <div class="grid-3">
+      <div class="card navy">
+        <div class="card-num">Test 1</div>
+        <div class="card-title">Absorb the cost under pressure</div>
+        <div class="card-body">Culture is built in the moments when a value is tested by something real — not in normal conditions. Every exception teaches the organization the actual terms of the value.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Test 2</div>
+        <div class="card-title">Say the uncomfortable thing first</div>
+        <div class="card-body">Leaders who manage perception upward while expecting transparency downward don't get transparency. They get very polished reporting.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">Test 3</div>
+        <div class="card-title">Promote the person who told you the truth</div>
+        <div class="card-body">Every promotion tells the organization what behavior leads forward — more powerfully than any stated value or leadership principle.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: The series diagnostic questions -->
+  <div class="slide">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; Diagnostic</div>
+    <h2>Eight questions before the launch.</h2>
+    <div class="rule"></div>
+    <ul class="q-list">
+      <li>Have you defined the outcome in terms specific enough to be proven wrong — in language every leader describes the same way?</li>
+      <li>Have you mapped every leader with veto power and resolved incentive conflicts before the announcement?</li>
+      <li>Have you redesigned the handoffs the new work will depend on before it lands on top of them?</li>
+      <li>Have you tested organizational readiness across strategy, process, and capability — before procurement?</li>
+      <li>Have you named the momentum owner and written the stall definition before anyone needs to interpret it under pressure?</li>
+      <li>Have you committed to a real, visible, financially meaningful result inside the first 90 days?</li>
+      <li>Have you identified the first cohort and designed the opening phase to produce results with them — not announce to everyone?</li>
+      <li>Have you confirmed you have the standing to do this work, or is the first task renegotiating the role itself?</li>
+    </ul>
+  </div>
+
+  <!-- SLIDE 14: The structural argument -->
+  <div class="slide dark">
+    <div class="eyebrow">Why Change Fails &nbsp;·&nbsp; The Full Argument</div>
+    <h2>The 70 percent rate is not an anomaly.<br>It is the equilibrium.</h2>
+    <div class="rule"></div>
+    <p class="lead">Doing the structural work to move it costs less than the current arrangement does.</p>
+    <div class="grid-2" style="margin-top:0.5rem;">
+      <div class="card navy">
+        <div class="card-num">What the series shows</div>
+        <div class="card-title">The structure produced this</div>
+        <div class="card-body">Launches get rewarded. Sustainment doesn't. Accountability diffuses by the time consequences arrive. AI accelerates what was already there. The same breakpoints reappear in the next transformation.</div>
+      </div>
+      <div class="card navy">
+        <div class="card-num">What changes it</div>
+        <div class="card-title">Structure, not exhortation</div>
+        <div class="card-body">Stewardship lines that survive sponsor turnover. Pre-committed stall protocols. Compensation tied to multi-year outcomes. Post-mortem discipline that names the skipped design decision. And the leader who believes people are the asset.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: Closing -->
+  <div class="slide dark">
+    <div class="closing-big">The work<br>that holds.</div>
+    <div class="rule"></div>
+    <p class="lead">Read the full series at workthatholds.com</p>
+    <p class="cover-meta" style="margin-top:2rem; color:rgba(255,255,255,0.3);">workthatholds.com &nbsp;·&nbsp; brandonfreitag.com</p>
+  </div>
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 15</div>
+<div class="nav"><button onclick="go(-1)">←</button><button onclick="go(1)">→</button></div>
+<script>
+  const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
+  function show(n) { slides[cur].classList.remove('active'); cur = (n+total)%total; slides[cur].classList.add('active'); document.getElementById('progress').style.width=((cur+1)/total*100)+'%'; document.getElementById('counter').textContent=(cur+1)+' / '+total; updateBackLink(); }
+  function go(d) { show(cur+d); }
+  function updateBackLink() { var isDark = slides[cur].classList.contains("dark"); var link = document.getElementById("back-link"); link.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; link.onmouseover = function(){ this.style.color = isDark ? "rgba(255,255,255,0.8)" : "#1a3a6b"; }; link.onmouseout = function(){ this.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; }; document.querySelectorAll(".nav button").forEach(function(btn){ if(isDark){ btn.classList.add("on-dark"); } else { btn.classList.remove("on-dark"); } }); }
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key===' ')go(1); if(e.key==='ArrowLeft')go(-1); });
+  let tx=0; document.addEventListener('touchstart',e=>tx=e.touches[0].clientX); document.addEventListener('touchend',e=>{ const dx=tx-e.changedTouches[0].clientX; if(Math.abs(dx)>40)go(dx>0?1:-1); });
+  show(0); updateBackLink();
+</script>
+</body>
+</html>
