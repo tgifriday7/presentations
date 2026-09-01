@@ -6,27 +6,27 @@
 <title>Five Breakpoints Leaders Miss — Brandon Freitag</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root { --navy: #1a3a6b; --navy-dark: #0f2347; --navy-mid: #2a4f8a; --navy-light: #e8eef7; --white: #ffffff; --text: #1a1a2e; --muted: #6b7280; --border: #dde3ed; }
+  :root { --navy: #8C6A15; --navy-dark: #1A1C20; --navy-mid: #9A7A24; --navy-light: #F2EAD3; --white: #FBFAF7; --text: #1A1C20; --muted: #767B84; --border: #E4E1D8; }
   html { font-size: 18px; }
-  body { background: var(--white); color: var(--text); font-family: 'Georgia', serif; overflow: hidden; height: 100vh; width: 100vw; }
+  body { background: var(--white); color: var(--text); font-family: 'Source Serif 4', Georgia, serif; overflow: hidden; height: 100vh; width: 100vw; }
   .deck { width: 100vw; height: 100vh; position: relative; }
   .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 8vh 10vw 8vh 10vw; padding-top: max(8rem, 16vh); opacity: 0; pointer-events: none; transition: opacity 0.35s ease; background: var(--white); }
   .slide.active { opacity: 1; pointer-events: all; }
   .slide.dark { background: var(--navy-dark); color: var(--white); }
   .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--navy); transition: width 0.35s ease; z-index: 100; }
-  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
+  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
   .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
-  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Helvetica Neue', sans-serif; }
+  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Inter', 'Helvetica Neue', sans-serif; }
   .nav button.on-dark { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.45); }
   .nav button.on-dark:hover { border-color: rgba(255,255,255,0.8); color: rgba(255,255,255,0.9); }
   .nav button:hover { border-color: var(--navy); color: var(--navy); }
-  .eyebrow { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.6rem; font-weight: 600; }
+  .eyebrow { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.6rem; font-weight: 600; }
   .slide.dark .eyebrow { color: rgba(255,255,255,0.45); }
-  h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.08; color: var(--navy-dark); max-width: 20ch; margin-bottom: 1.4rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.02em; }
+  h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.08; color: var(--navy-dark); max-width: 20ch; margin-bottom: 1.4rem; font-family: 'Inter', 'Helvetica Neue', sans-serif; letter-spacing: -0.02em; }
   .slide.dark h1 { color: var(--white); }
-  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.15; color: var(--navy-dark); margin-bottom: 1.1rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: -0.015em; }
+  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.15; color: var(--navy-dark); margin-bottom: 1.1rem; font-family: 'Inter', 'Helvetica Neue', sans-serif; letter-spacing: -0.015em; }
   .slide.dark h2 { color: var(--white); }
-  h3 { font-family: 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 0.5rem; font-weight: 600; }
+  h3 { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 0.5rem; font-weight: 600; }
   .slide.dark h3 { color: rgba(255,255,255,0.45); }
   .lead { font-size: clamp(0.95rem, 1.7vw, 1.2rem); line-height: 1.7; color: #374151; max-width: 58ch; margin-bottom: 1rem; }
   .slide.dark .lead { color: rgba(255,255,255,0.8); }
@@ -34,33 +34,33 @@
   .slide.dark .body { color: rgba(255,255,255,0.6); }
   .rule { width: 2.5rem; height: 2px; background: var(--navy); margin-bottom: 1.8rem; }
   .slide.dark .rule { background: rgba(255,255,255,0.3); }
-  .bp-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--navy); color: var(--navy); padding: 0.22rem 0.65rem; margin-bottom: 1.4rem; font-weight: 600; display: inline-block; }
+  .bp-label { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--navy); color: var(--navy); padding: 0.22rem 0.65rem; margin-bottom: 1.4rem; font-weight: 600; display: inline-block; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; width: 100%; max-width: 1000px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5vw; width: 100%; max-width: 1000px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; width: 100%; max-width: 1000px; }
   .card { border-left: 2px solid var(--border); padding-left: 1.2rem; }
   .card.navy { border-left-color: var(--navy); }
   .slide.dark .card { border-left-color: rgba(255,255,255,0.2); }
-  .card-num { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--navy-mid); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .card-num { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--navy-mid); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
   .slide.dark .card-num { color: rgba(255,255,255,0.4); }
-  .card-title { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(0.82rem, 1.3vw, 0.95rem); color: var(--navy-dark); margin-bottom: 0.35rem; font-weight: 600; line-height: 1.3; }
+  .card-title { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: clamp(0.82rem, 1.3vw, 0.95rem); color: var(--navy-dark); margin-bottom: 0.35rem; font-weight: 600; line-height: 1.3; }
   .slide.dark .card-title { color: var(--white); }
   .card-body { font-size: clamp(0.7rem, 1vw, 0.82rem); color: var(--muted); line-height: 1.65; }
   .slide.dark .card-body { color: rgba(255,255,255,0.55); }
   .stat { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 1rem 1.5rem; margin-top: 1.5rem; max-width: 50ch; }
-  .stat-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--navy); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
-  .stat-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
+  .stat-num { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: clamp(1.5rem, 2.5vw, 2rem); color: var(--navy); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+  .stat-label { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
   .map-table { width: 100%; max-width: 860px; border-collapse: collapse; font-size: clamp(0.66rem, 1vw, 0.8rem); }
-  .map-table th { font-family: 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--navy-mid); text-align: left; padding: 0.5rem 1rem 0.5rem 0; border-bottom: 2px solid var(--navy-light); font-weight: 600; }
+  .map-table th { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--navy-mid); text-align: left; padding: 0.5rem 1rem 0.5rem 0; border-bottom: 2px solid var(--navy-light); font-weight: 600; }
   .map-table td { color: var(--muted); padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--border); line-height: 1.4; vertical-align: top; }
-  .map-table td:first-child { color: var(--navy-mid); font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
-  .map-table td:nth-child(2) { color: var(--navy-dark); font-family: 'Helvetica Neue', sans-serif; font-weight: 500; }
-  .closing-big { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 800; color: rgba(255,255,255,0.22); line-height: 0.95; margin-bottom: 1.2rem; letter-spacing: -0.03em; }
-  .cover-meta { font-family: 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--muted); margin-top: 2.5rem; text-transform: uppercase; }
+  .map-table td:first-child { color: var(--navy-mid); font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+  .map-table td:nth-child(2) { color: var(--navy-dark); font-family: 'Inter', 'Helvetica Neue', sans-serif; font-weight: 500; }
+  .closing-big { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 800; color: rgba(255,255,255,0.22); line-height: 0.95; margin-bottom: 1.2rem; letter-spacing: -0.03em; }
+  .cover-meta { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--muted); margin-top: 2.5rem; text-transform: uppercase; }
   .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5vw; width: 100%; max-width: 1000px; margin-top: 0.5rem; }
   .stat-card { background: var(--navy-light); border-left: 3px solid var(--navy); padding: 0.8rem 1rem; }
-  .stat-card-num { font-family: 'Helvetica Neue', sans-serif; font-size: clamp(1.1rem, 2vw, 1.6rem); color: var(--navy); font-weight: 700; margin-bottom: 0.2rem; }
-  .stat-card-label { font-family: 'Helvetica Neue', sans-serif; font-size: 0.6rem; color: var(--muted); line-height: 1.45; }
+  .stat-card-num { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: clamp(1.1rem, 2vw, 1.6rem); color: var(--navy); font-weight: 700; margin-bottom: 0.2rem; }
+  .stat-card-label { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.6rem; color: var(--muted); line-height: 1.45; }
 @media (max-width: 768px) {
     body { overflow: hidden !important; }
     .slide { padding: 10vw 6vw 14vw 6vw; justify-content: flex-start; padding-top: 14vw; overflow: hidden; }
@@ -84,9 +84,13 @@
     .q-list li { font-size: 0.72rem; padding: 0.45rem 0; }
   }
 </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:wght@400;600&display=swap">
+  <style>h1, h2, .deck-title { font-family: "Source Serif 4", Georgia, serif !important; font-weight: 600 !important; }</style>
 </head>
 <body>
-<a id="back-link" href="https://presentations.brandonfreitag.com" style="position:fixed;top:1.4rem;left:2rem;font-family:Helvetica Neue,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#6b7280;text-decoration:none;z-index:100;transition:color 0.2s;">← All presentations</a>
+<a id="back-link" href="https://presentations.brandonfreitag.com" style="position:fixed;top:1.4rem;left:2rem;font-family:Helvetica Neue,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#767B84;text-decoration:none;z-index:100;transition:color 0.2s;">← All presentations</a>
 <div class="deck" id="deck">
 
   <div class="slide active">
@@ -245,7 +249,7 @@
   const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
   function show(n) { slides[cur].classList.remove('active'); cur = (n+total)%total; slides[cur].classList.add('active'); document.getElementById('progress').style.width=((cur+1)/total*100)+'%'; document.getElementById('counter').textContent=(cur+1)+' / '+total; updateBackLink(); }
   function go(d) { show(cur+d); }
-  function updateBackLink() { var isDark = slides[cur].classList.contains("dark"); var link = document.getElementById("back-link"); link.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; link.onmouseover = function(){ this.style.color = isDark ? "rgba(255,255,255,0.8)" : "#1a3a6b"; }; link.onmouseout = function(){ this.style.color = isDark ? "rgba(255,255,255,0.4)" : "#6b7280"; }; document.querySelectorAll(".nav button").forEach(function(btn){ if(isDark){ btn.classList.add("on-dark"); } else { btn.classList.remove("on-dark"); } }); }
+  function updateBackLink() { var isDark = slides[cur].classList.contains("dark"); var link = document.getElementById("back-link"); link.style.color = isDark ? "rgba(255,255,255,0.4)" : "#767B84"; link.onmouseover = function(){ this.style.color = isDark ? "rgba(255,255,255,0.8)" : "#8C6A15"; }; link.onmouseout = function(){ this.style.color = isDark ? "rgba(255,255,255,0.4)" : "#767B84"; }; document.querySelectorAll(".nav button").forEach(function(btn){ if(isDark){ btn.classList.add("on-dark"); } else { btn.classList.remove("on-dark"); } }); }
   document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key===' ')go(1); if(e.key==='ArrowLeft')go(-1); });
   let tx=0; document.addEventListener('touchstart',e=>tx=e.touches[0].clientX); document.addEventListener('touchend',e=>{ const dx=tx-e.changedTouches[0].clientX; if(Math.abs(dx)>40)go(dx>0?1:-1); });
   show(0); updateBackLink();
