@@ -121,6 +121,14 @@
     .stat-item:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
     .title { font-size: 1.6rem; }
   }
+
+  /* BRAND.md section 7 conformance */
+  h1, h2, .deck-title { font-family: 'Source Serif 4', Georgia, serif !important; font-weight: 600 !important; }
+  .eyebrow { display: table; }
+  .eyebrow::after { content: ''; display: block; width: 100%; height: 2px; border-radius: 1px; background: var(--navy); margin-top: 0.5rem; }
+  .slide.dark .eyebrow::after { background: rgba(255,255,255,0.35); }
+  .rule { display: none; }
+  .brandline { position: fixed; bottom: 1.8rem; left: 2.5rem; font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); z-index: 100; }
 </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
