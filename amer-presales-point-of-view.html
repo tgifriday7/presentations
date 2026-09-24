@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Running an Americas Pre-Sales Organisation · Brandon Freitag</title>
+<link rel="canonical" href="https://presentations.brandonfreitag.com/amer-presales-point-of-view">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --navy: #8C6A15; --navy-dark: #1A1C20; --navy-mid: #9A7A24; --navy-light: #F2EAD3; --white: #FBFAF7; --text: #1A1C20; --muted: #767B84; --border: #E4E1D8; }
+  html { font-size: 18px; }
+  body { background: var(--white); color: var(--text); font-family: 'Source Serif 4', Georgia, serif; overflow: hidden; height: 100vh; width: 100vw; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 8vh 8vw; padding-top: max(6rem, 12vh); opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .slide.dark { background: var(--navy-dark); color: var(--white); }
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--navy); transition: width 0.35s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
+  .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
+  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: 'Inter', 'Helvetica Neue', sans-serif; }
+  .nav button.on-dark { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.45); }
+  .nav button:hover { border-color: var(--navy); color: var(--navy); }
+  .eyebrow { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-mid); margin-bottom: 1.4rem; font-weight: 600; display: table; }
+  .eyebrow::after { content: ''; display: block; width: 100%; height: 2px; border-radius: 1px; background: var(--navy); margin-top: 0.5rem; }
+  .slide.dark .eyebrow { color: rgba(255,255,255,0.45); }
+  h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 600; line-height: 1.08; color: var(--navy-dark); max-width: 20ch; margin-bottom: 1.4rem; font-family: 'Source Serif 4', Georgia, serif; letter-spacing: -0.01em; }
+  .slide.dark h1 { color: var(--white); }
+  h2 { font-size: clamp(1.3rem, 2.6vw, 2.1rem); font-weight: 600; line-height: 1.15; color: var(--navy-dark); margin-bottom: 1.4rem; font-family: 'Source Serif 4', Georgia, serif; max-width: 34ch; }
+  .lead { font-size: clamp(0.95rem, 1.7vw, 1.2rem); line-height: 1.7; color: #4A4F57; max-width: 58ch; margin-bottom: 1rem; }
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+  .rule { display: none; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; width: 100%; max-width: 1100px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5vw; width: 100%; max-width: 1100px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; width: 100%; max-width: 1100px; }
+  .bottom { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+  .card { border-left: 2px solid var(--border); padding-left: 1.1rem; }
+  .card.navy { border-left-color: var(--navy); }
+  .card-num { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--navy-mid); font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .card-title { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: clamp(0.8rem, 1.2vw, 0.92rem); color: var(--navy-dark); margin-bottom: 0.35rem; font-weight: 600; line-height: 1.3; }
+  .card-body { font-size: clamp(0.68rem, 0.95vw, 0.8rem); color: var(--muted); line-height: 1.6; }
+  .closing-big { font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 600; color: rgba(255,255,255,0.25); line-height: 1; margin-bottom: 1.2rem; }
+  .cover-meta { font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--muted); margin-top: 2.5rem; text-transform: uppercase; }
+  .brandline { position: fixed; bottom: 1.8rem; left: 2.5rem; font-family: 'Inter', 'Helvetica Neue', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); z-index: 100; }
+  @media (max-width: 900px) {
+    .slide { padding: 8vw 6vw 14vw 6vw; justify-content: flex-start; padding-top: 12vw; overflow-y: auto; }
+    h1 { font-size: clamp(1.6rem, 7vw, 2.5rem); }
+    h2 { font-size: clamp(1.1rem, 5vw, 1.6rem); }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 0.9rem; }
+    .closing-big { font-size: clamp(1.6rem, 8vw, 2.6rem); }
+    #back-link { font-size: 0.55rem; top: 1rem; left: 1.2rem; }
+    .brandline { display: none; }
+  }
+</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:wght@400;600&display=swap">
+</head>
+<body>
+<a id="back-link" href="/" style="position:fixed;top:1.4rem;left:2rem;font-family:Helvetica Neue,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#767B84;text-decoration:none;z-index:100;transition:color 0.2s;">&larr; All presentations</a>
+<div class="deck" id="deck">
+
+  <div class="slide active">
+    <div class="eyebrow">Point of view</div>
+    <h1>Running an Americas pre-sales organisation</h1>
+    <div class="rule"></div>
+    <p class="lead">Ten ideas, each with a claim, three proofs, one measure and the question that would test it at Ping. Everything traces to work I have done. Nothing here is a finding about Ping; it is what I would want to validate together.</p>
+    <p class="cover-meta"><a href="https://brandonfreitag.com" style="color:inherit;text-decoration:none;">Brandon Freitag</a> &nbsp;&middot;&nbsp; September 2026</p>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">What the seat is for &nbsp;&middot;&nbsp; 1 of 10</div>
+    <h2>Four numbers: three the business already tracks, and the one that decides retention.</h2>
+    <div class="grid-4">
+      <div class="card"><div class="card-title">Technical win rate, competitive new logo</div><div class="card-body">Against Okta and Entra, by segment and by competitor. Where the moat holds: regulated, hybrid, sovereign, complex customer identity.</div></div>
+      <div class="card"><div class="card-title">POV conversion, migration and attach</div><div class="card-body">Self-managed to SaaS, ForgeRock to AIC, and the attach of Protect, Verify, Governance, Privilege and Identity for AI. Two thirds of bookings live here.</div></div>
+      <div class="card"><div class="card-title">Cost per technical win</div><div class="card-body">The number the business prices. Capacity comes from qualification, spans, partners and automation before it comes from headcount.</div></div>
+      <div class="card"><div class="card-title">What happened next</div><div class="card-body">Adoption against what was sold, outcome achieved, expansion and retention, cut by pre-sale team. The number a signature never proves.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Whether the four exist in the CRM today, and what moved in two quarters. Start with how often the business-outcome field is filled in.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">Which of these four does the forecast read today, and who sees post-close outcomes by pre-sale team?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">Business-outcome selling &nbsp;&middot;&nbsp; 2 of 10</div>
+    <h2>Pursuits anchored to a customer outcome win at a multiple of product-led ones.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">The portfolio told me where to look</div><div class="card-body">At Google Cloud one class of pursuit was about 20% of the work and 70% of the revenue. I proposed and founded a practice on that evidence.</div></div>
+      <div class="card"><div class="card-title">Measured before scaling</div><div class="card-body">Win-rate research across engagement motions: outcome-anchored pursuits won at roughly 9x the rate of RFI-driven ones.</div></div>
+      <div class="card"><div class="card-title">Sustained, not a pilot</div><div class="card-body">Qualification rebuilt around the finding, which meant declining work. The practice held 2x the field win rate against a $10.98B North America target.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Win rate by engagement motion and by competitor, tracked quarterly.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">Where does the field lose deals the platform should be winning?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">Up-levelling an organisation to it &nbsp;&middot;&nbsp; 3 of 10</div>
+    <h2>Enablement does not beat an incentive. Change the gate and the comp, then train.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Reach I can count</div><div class="card-body">A 180-plus principal architect community engaged and 300-plus infrastructure specialists enabled on the method.</div></div>
+      <div class="card"><div class="card-title">Adoption stayed the exception</div><div class="card-body">The people who ran outcome-based engagements did well and stayed the minority, because the incentive was to push product.</div></div>
+      <div class="card"><div class="card-title">The fix is structural</div><div class="card-body">A qualification gate agreed with sales and written into the cadence; variable comp tied to technical wins and POV conversion; certification with teeth.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Share of pursuits that clear the gate, and POV conversion before and after.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">Where do Sales and SE incentives point in different directions today?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">Sales partnership &nbsp;&middot;&nbsp; 4 of 10</div>
+    <h2>Co-pilot means a shared standard and a shared number.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Decided together, in advance</div><div class="card-body">The qualification standard is agreed between the two leaders and lives in the cadence, so no deal becomes SE versus rep.</div></div>
+      <div class="card"><div class="card-title">The right to decline, exercised rarely</div><div class="card-body">Time-boxed POCs with success criteria are how SE says yes without losing the quarter. Declining is the exception the standard makes possible.</div></div>
+      <div class="card"><div class="card-title">SE carries a number next to sales</div><div class="card-body">Technical win rate and POV conversion sit beside bookings in the same review. I own mine the way the sales leader owns theirs.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Technical win probability by stage, readable in the forecast.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">What does SE owe your forecast today, and what would you want it to owe?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">Metrics and rhythms &nbsp;&middot;&nbsp; 5 of 10</div>
+    <h2>Outcomes on the scorecard, activity as diagnostics, one cadence that cascades.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Four outcome numbers</div><div class="card-body">Technical win rate by motion and competitor; POV conversion and cycle time; cost per technical win; what happened after the signature.</div></div>
+      <div class="card"><div class="card-title">Activity as inputs, never as the score</div><div class="card-body">Demos, workshops and POCs are diagnostics of where hours go. They explain the outcome numbers; they do not replace them. Deals qualified out or scoped down are recorded as decisions with a reason, not as losses.</div></div>
+      <div class="card"><div class="card-title">A weekly rhythm about deals and people</div><div class="card-body">Deal and POC reviews, a planning artifact that cascades from the SVP's, and a quarterly review the sales leader sits in.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Cycle time at evaluation stage, and forecast accuracy where SE input feeds it.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">Where does forecast accuracy break, by stage or by segment?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">Capacity without headcount &nbsp;&middot;&nbsp; 6 of 10</div>
+    <h2>There are four sources of capacity, and headcount is not the first.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Qualification, fastest</div><div class="card-body">Declining pursuits that win at a ninth of the rate frees more hours than any tool, and shows up in a quarter.</div></div>
+      <div class="card"><div class="card-title">Spans and the senior IC track</div><div class="card-body">Player-coach leaders returning to full contribution through Principal and Distinguished roles restores hours without a req, and keeps the people.</div></div>
+      <div class="card"><div class="card-title">Partners, then automation</div><div class="card-body">Integrators delivering migrations so SE hours go to winning. Then the grind automated: RFx, POC environments, discovery synthesis. The SE organisation running its own agents under the product is the demo.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Hours freed per SE per quarter, and where they went: to executive discovery, readiness and the honest diagnosis, or to more demos.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">How much of the leaders' time is player-coach today, and how is it counted?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">Two plays, two scorecards &nbsp;&middot;&nbsp; 7 of 10</div>
+    <h2>Migration and attach inside the base and competitive new logo are different motions.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">The base is most of the business</div><div class="card-body">A mature identity vendor books most new ACV from existing customers: migration to SaaS, ForgeRock to AIC, attach of new services. The risk is destabilising a SAML estate; the reward is retention.</div></div>
+      <div class="card"><div class="card-title">New logo runs into the bundle</div><div class="card-body">Entra is already in the E5 contract. You do not beat a bundle on features; you win the use cases it cannot serve and quantify the cost of the gap.</div></div>
+      <div class="card"><div class="card-title">One win rate hides which is broken</div><div class="card-body">Two plays, two scorecards, two kinds of SE hour. Read separately or you fix the wrong one.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Win rate and POV conversion by play, not blended.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">What is the split of the Americas number between the base and net-new, and where is the win rate weakest?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">The agentic motion &nbsp;&middot;&nbsp; 8 of 10</div>
+    <h2>A specialist pod that graduates, incubated in the region that has the references.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Shape</div><div class="card-body">An overlay of four to six from the senior IC track, one of whom speaks agent-builder language: MCP, token exchange, agent frameworks. The buyer is platform engineering and the CISO, not the IAM team.</div></div>
+      <div class="card"><div class="card-title">Mandate</div><div class="card-body">A fixed-deliverable discovery workshop that scores whether the organisation can absorb what is built, not only whether it works; eight to twelve lighthouse POVs, each one real agent use case with an auditable success criterion; turn what works into a play and certify generalists.</div></div>
+      <div class="card"><div class="card-title">Graduation</div><div class="card-body">The pod's metric is the share of agentic deals run without it, with a named steward measured on twelve-month outcomes. Incubated in AMER, handed to the global function when the play and the people are ready.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">Referenceable wins with a named buyer; share of agentic deals run without the pod.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">Do specialists sit in the regions or globally today, and where should the agentic motion live?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">The first two quarters &nbsp;&middot;&nbsp; 9 of 10</div>
+    <h2>Diagnose, instrument, then move. Everything before the data is a hypothesis.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Days 1 to 30: listen</div><div class="card-body">One-to-ones with every leader, ride-alongs on the top pursuits, deal and POC reviews to see where technical wins are actually lost. Two cheap tests: how often the business-outcome field in the CRM is filled in, and whether leaders across functions describe what the SE organisation is for the same way.</div></div>
+      <div class="card"><div class="card-title">Days 31 to 60: instrument and agree</div><div class="card-body">The four numbers live in the CRM. The qualification standard agreed with the sales leader. What is funded and the checkpoints agreed with leadership, in writing. The pod named from existing talent; the first lighthouses chosen.</div></div>
+      <div class="card"><div class="card-title">Days 61 to 90: first results</div><div class="card-body">First POV outcomes on the new standard, first certification wave, and a proposal on spans through the senior IC track. Then the second quarter is execution.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">What changed by the end of the second quarter, in the four numbers, against checkpoints agreed in the first sixty days.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">What would make you say this hire was a great decision at twelve months?</div></div>
+    </div>
+  </div>
+  <div class="slide">
+    <div class="eyebrow">Where this comes from &nbsp;&middot;&nbsp; 10 of 10</div>
+    <h2>Built, sold, sat on the customer side, and measured all of it.</h2>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Built and ran the practice</div><div class="card-body">Proposed and founded a strategic architecture practice at Google Cloud; pursuits of $20M-plus, many above $100M, the largest in the billions.</div></div>
+      <div class="card"><div class="card-title">Ran a large organisation inside a regulated enterprise</div><div class="card-body">140 people through two layers of managers at a Fortune 200 healthcare system, across the CIO, the CISO and business leadership, holding HIPAA commitments while cutting operating cost 27%.</div></div>
+      <div class="card"><div class="card-title">Measures before trusting the assumption</div><div class="card-body">A solo patent on the process I was measuring at Motorola; a Six Sigma black belt; the same instinct produced the 9x finding twenty-five years later.</div></div>
+    </div>
+    <div class="grid-2 bottom">
+      <div class="card navy"><div class="card-num">The measure</div><div class="card-body">The four numbers on page one, two quarters in.</div></div>
+      <div class="card navy"><div class="card-num">The question that tests it here</div><div class="card-body">Is there anything about my background that makes you uncertain about the fit?</div></div>
+    </div>
+  </div>
+  <div class="slide dark">
+    <div class="closing-big">Measure first.<br>Then move.</div>
+    <div class="rule"></div>
+    <p class="lead">Every page here is a hypothesis until the data says otherwise.</p>
+    <p class="cover-meta" style="margin-top:2rem; color:rgba(255,255,255,0.3);">brandonfreitag.com</p>
+  </div>
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 12</div>
+<div class="nav"><button onclick="go(-1)">&larr;</button><button onclick="go(1)">&rarr;</button></div>
+<script>
+  const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
+  function show(n) { slides[cur].classList.remove('active'); cur = (n+total)%total; slides[cur].classList.add('active'); document.getElementById('progress').style.width=((cur+1)/total*100)+'%'; document.getElementById('counter').textContent=(cur+1)+' / '+total; updateBackLink(); }
+  function go(d) { show(cur+d); }
+  function updateBackLink() { var isDark = slides[cur].classList.contains("dark"); var link = document.getElementById("back-link"); link.style.color = isDark ? "rgba(255,255,255,0.4)" : "#767B84"; document.querySelectorAll(".nav button").forEach(function(btn){ if(isDark){ btn.classList.add("on-dark"); } else { btn.classList.remove("on-dark"); } }); }
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key===' ')go(1); if(e.key==='ArrowLeft')go(-1); });
+  let tx=0; document.addEventListener('touchstart',e=>tx=e.touches[0].clientX); document.addEventListener('touchend',e=>{ const dx=tx-e.changedTouches[0].clientX; if(Math.abs(dx)>40)go(dx>0?1:-1); });
+  show(0); updateBackLink();
+</script>
+<div class="brandline">Brandon Freitag &middot; Point of view</div>
+</body>
+</html>
