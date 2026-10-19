@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The 2027 AI Budget Pre-Mortem · Brandon Freitag</title>
+<link rel="canonical" href="https://presentations.workthatholds.com/ai-budget-pre-mortem">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --accent: #8C6A15;
+    --accent-tint: #F6F0DF;
+    --gold: #8C6A15;
+    --paper: #FBFAF7;
+    --surface: #FFFFFF;
+    --ink: #1A1C20;
+    --ink-soft: #4A4F57;
+    --ink-faint: #767B84;
+    --line: #E4E1D8;
+    --line-strong: #CFCABD;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  @page { size: Letter; margin: 0; }
+  html { background: #ECEAE4; }
+  body { font-family: var(--sans); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 8.5in; height: 11in; margin: 0.4in auto; background: var(--paper); padding: 0.46in 0.6in 0.42in; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 1px 3px rgba(26,28,32,0.12); }
+
+  .eyebrow { display: table; align-self: flex-start; font-size: 7.5pt; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .eyebrow::after { content: ''; display: block; width: 100%; height: 2px; border-radius: 1px; background: var(--gold); margin-top: 5px; }
+
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 24pt; line-height: 1.1; letter-spacing: -0.01em; margin: 9px 0 4px; }
+  .sub { font-family: var(--serif); font-size: 10.6pt; line-height: 1.4; color: var(--ink-soft); max-width: 62ch; }
+  .lede { font-size: 9.1pt; line-height: 1.48; color: var(--ink-soft); margin-top: 8px; max-width: 84ch; }
+
+  .how { margin-top: 10px; display: flex; gap: 10px; align-items: baseline; font-size: 8.8pt; color: var(--ink-soft); line-height: 1.45; border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); padding: 6px 0; }
+  .how strong { color: var(--ink); font-weight: 600; white-space: nowrap; }
+
+  .cols { display: grid; grid-template-columns: 20px 1.12fr 1fr 1.14fr; gap: 0 14px; padding: 8px 12px 4px 12px; }
+  .cols span { font-size: 6.8pt; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--ink-faint); }
+
+  .items { display: flex; flex-direction: column; gap: 5px; }
+  .item { display: grid; grid-template-columns: 20px 1.12fr 1fr 1.14fr; gap: 0 14px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 7px 12px; }
+  .box-check { width: 14px; height: 14px; border: 1.5px solid var(--accent); border-radius: 2px; margin-top: 2px; background: var(--surface); }
+  .q-num { font-size: 6.6pt; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--accent); margin-bottom: 3px; }
+  .q { font-family: var(--serif); font-size: 10pt; font-weight: 600; line-height: 1.28; }
+  .tag { font-size: 7.6pt; color: var(--ink-faint); margin-top: 4px; }
+  .weak, .do { font-size: 8.5pt; line-height: 1.38; color: var(--ink-soft); }
+  .weak { font-style: italic; font-family: var(--serif); font-size: 8.8pt; line-height: 1.34; }
+  .do { color: var(--ink); border-left: 1px solid var(--line); padding-left: 12px; }
+
+  .read { margin-top: 9px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .panel { background: var(--accent-tint); border: 1px solid #E6D9B5; padding: 9px 13px; }
+  .panel .eyebrow { margin-bottom: 6px; font-size: 6.8pt; }
+  .panel h2 { font-family: var(--serif); font-size: 11pt; font-weight: 600; margin-bottom: 4px; }
+  .panel p { font-size: 8.6pt; line-height: 1.45; color: var(--ink-soft); }
+  .panel p + p { margin-top: 5px; }
+
+  .footer { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line-strong); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+  .footer .brand { font-family: var(--serif); font-size: 10pt; font-weight: 600; }
+  .footer .src { font-size: 7.6pt; color: var(--ink-faint); margin-top: 2px; }
+  .footer .links { text-align: right; font-size: 8.4pt; line-height: 1.5; color: var(--ink-soft); }
+  .footer .links strong { color: var(--accent); font-weight: 600; }
+  a { color: inherit; text-decoration: none; }
+
+  @media print {
+    html { background: none; }
+    .page { margin: 0; box-shadow: none; }
+  }
+  @media screen and (max-width: 860px) {
+    .page { width: auto; height: auto; margin: 0; padding: 28px 16px; }
+    .cols { display: none; }
+    .item { grid-template-columns: 22px 1fr; gap: 8px 10px; }
+    .weak, .do { grid-column: 2; }
+    .weak::before { content: 'A weak answer: '; font-style: normal; font-weight: 600; }
+    .do { border-left: none; padding-left: 0; }
+    .do::before { content: 'Before you commit: '; font-weight: 600; }
+    .read { grid-template-columns: 1fr; }
+    .how { flex-direction: column; gap: 2px; }
+    .footer { flex-direction: column; align-items: flex-start; }
+    .footer .links { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <div class="eyebrow">Work That Holds &nbsp;·&nbsp; A pre-mortem checklist</div>
+  <h1>Before you commit the 2027 AI budget</h1>
+  <p class="sub">Five questions for the sponsor about to fund the next tranche of an AI program, and what to settle before the money moves.</p>
+  <p class="lede">The pilot ran in a protected space. Scale runs through the real organization, with its incentives and handoffs intact. When an AI program stalls between pilot and scale, the usual cause is a condition in the organization that nobody checked before the budget was committed. A pre-mortem asks how the program would fail while the answer can still change the plan.</p>
+
+  <div class="how"><strong>How to run it</strong><span>Ask each question of the people doing the work as well as the people running the program, and check the box only when both groups give a strong answer. Run it before the budget meeting.</span></div>
+
+  <div class="cols" aria-hidden="true"><span></span><span>The question</span><span>A weak answer sounds like</span><span>Before you commit</span></div>
+
+  <section class="items">
+    <div class="item">
+      <div class="box-check"></div>
+      <div>
+        <div class="q-num">1 &nbsp;·&nbsp; Strategic Disconnection</div>
+        <div class="q">Would ten leaders describe the outcome this budget buys the same way?</div>
+      </div>
+      <p class="weak">Each function names a different result, or the answers describe deployment and adoption instead of a business result anyone could miss.</p>
+      <p class="do">Write the outcome as a number: what moves, from what, to what, by when, and which executive is exposed if it does not. Settle that sentence before funding the work.</p>
+    </div>
+    <div class="item">
+      <div class="box-check"></div>
+      <div>
+        <div class="q-num">2 &nbsp;·&nbsp; Incentive Fragmentation</div>
+        <div class="q">Will the incentives survive the first real conflict between this program and someone&rsquo;s own targets?</div>
+      </div>
+      <p class="weak">Support is measured by who attends the steering meetings, and the leaders whose teams must change are still paid on last year&rsquo;s metrics.</p>
+      <p class="do">Check that every team whose behavior must change is measured on the new state. Resolve the conflicts you can see now, and name who decides the rest.</p>
+    </div>
+    <div class="item">
+      <div class="box-check"></div>
+      <div>
+        <div class="q-num">3 &nbsp;·&nbsp; Process Friction</div>
+        <div class="q">Does the work flow the way the process says, or the way the workaround says?</div>
+      </div>
+      <p class="weak">The pilot succeeded because a small team routed around the usual approvals, and the scale plan assumes everyone else will do the same.</p>
+      <p class="do">Map the handoffs and decision rights the scaled program will run through. Redesign the ones built for the old pace before you ask them to carry the new work.</p>
+    </div>
+    <div class="item">
+      <div class="box-check"></div>
+      <div>
+        <div class="q-num">4 &nbsp;·&nbsp; The Technology Illusion</div>
+        <div class="q">If the tool disappeared tomorrow, would anyone still agree on how the work should happen?</div>
+      </div>
+      <p class="weak">The plan describes the platform in detail and the changed workflow in a sentence, and success is reported as logins and licenses.</p>
+      <p class="do">Design the workflows and decision norms the tool is meant to change, and name who owns that redesign. Measure the work, with tool usage as a supporting signal.</p>
+    </div>
+    <div class="item">
+      <div class="box-check"></div>
+      <div>
+        <div class="q-num">5 &nbsp;·&nbsp; Momentum Mirage</div>
+        <div class="q">What happens if nobody manages this program for ninety days?</div>
+      </div>
+      <p class="weak">The only name anyone can give for the program is the sponsor&rsquo;s, and the status report has been green since launch.</p>
+      <p class="do">Name a steward measured on the sustained result, with a written definition of a stall and the authority to intervene. Fund the role in this budget.</p>
+    </div>
+  </section>
+
+  <section class="read">
+    <div class="panel">
+      <div class="eyebrow">Reading the result</div>
+      <h2>A weak answer is good news early.</h2>
+      <p>A weak answer to any one question tells you where the program is likely to stall. A condition you can name is a condition you can fix, and it costs far less to fix before the next tranche than after the post-mortem.</p>
+    </div>
+    <div class="panel">
+      <div class="eyebrow">The options on the table</div>
+      <h2>Fix first, re-scope, or stop.</h2>
+      <p>The honest choices are to fix the weak condition before funding the next phase, to cut the program back to what the organization can carry, or to stop. Stopping is hard to say to a board, and easier than explaining a year later why the second tranche went the way of the first.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div>
+      <div class="brand">Work That Holds</div>
+      <div class="src">Built on the Five Breakpoints and the Stewardship Gap, by Brandon Freitag</div>
+    </div>
+    <div class="links">
+      Read the essays at <strong><a href="https://www.workthatholds.com">workthatholds.com</a></strong><br>
+      Run the two-minute self-check at <strong><a href="https://worththatholds.com/self-check">worththatholds.com/self-check</a></strong>
+    </div>
+  </footer>
+
+</main>
+</body>
+</html>
