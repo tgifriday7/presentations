@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The Five Breakpoints · Brandon Freitag</title>
+<link rel="canonical" href="https://presentations.workthatholds.com/five-breakpoints-one-pager">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --accent: #8C6A15;
+    --accent-tint: #F6F0DF;
+    --gold: #8C6A15;
+    --paper: #FBFAF7;
+    --surface: #FFFFFF;
+    --ink: #1A1C20;
+    --ink-soft: #4A4F57;
+    --ink-faint: #767B84;
+    --line: #E4E1D8;
+    --line-strong: #CFCABD;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  @page { size: Letter; margin: 0; }
+  html { background: #ECEAE4; }
+  body { font-family: var(--sans); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 8.5in; height: 11in; margin: 0.4in auto; background: var(--paper); padding: 0.5in 0.6in 0.45in; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 1px 3px rgba(26,28,32,0.12); }
+
+  .eyebrow { display: table; align-self: flex-start; font-size: 7.5pt; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .eyebrow::after { content: ''; display: block; width: 100%; height: 2px; border-radius: 1px; background: var(--gold); margin-top: 5px; }
+
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 25pt; line-height: 1.1; letter-spacing: -0.01em; margin: 10px 0 5px; }
+  .sub { font-family: var(--serif); font-size: 11pt; line-height: 1.4; color: var(--ink-soft); max-width: 60ch; }
+  .lede { font-size: 9.2pt; line-height: 1.5; color: var(--ink-soft); margin-top: 9px; max-width: 78ch; }
+
+  .path { margin: 10px 0 6px; }
+  .path svg { display: block; width: 100%; height: auto; }
+
+  .bps { display: flex; flex-direction: column; gap: 6px; }
+  .bp { display: grid; grid-template-columns: 26px 1.2fr 1fr; gap: 0 14px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 8px 14px 8px 12px; }
+  .bp-num { font-family: var(--serif); font-size: 17pt; font-weight: 600; color: var(--accent); line-height: 1; }
+  .bp-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
+  .bp-name { font-family: var(--serif); font-size: 12pt; font-weight: 600; line-height: 1.2; }
+  .force { display: inline-block; font-size: 6.4pt; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--accent); border: 1px solid var(--accent); padding: 1px 6px; }
+  .bp-looks { font-size: 8.8pt; line-height: 1.42; color: var(--ink-soft); margin-top: 4px; }
+  .label { display: block; font-size: 6.6pt; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--ink-faint); margin-bottom: 3px; }
+  .bp-q { border-left: 1px solid var(--line); padding-left: 14px; }
+  .bp-q p { font-family: var(--serif); font-style: italic; font-size: 9.9pt; line-height: 1.36; color: var(--ink); }
+
+  .mapping { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .box { background: var(--accent-tint); border: 1px solid #E6D9B5; padding: 9px 13px; }
+  .box h2 { font-family: var(--serif); font-size: 11pt; font-weight: 600; margin-bottom: 4px; }
+  .box p { font-size: 8.6pt; line-height: 1.45; color: var(--ink-soft); }
+  .box .eyebrow { margin-bottom: 6px; font-size: 6.8pt; }
+
+  .footer { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line-strong); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+  .footer .brand { font-family: var(--serif); font-size: 10pt; font-weight: 600; }
+  .footer .src { font-size: 7.6pt; color: var(--ink-faint); margin-top: 2px; }
+  .footer .links { text-align: right; font-size: 8.4pt; line-height: 1.5; color: var(--ink-soft); }
+  .footer .links strong { color: var(--accent); font-weight: 600; }
+  a { color: inherit; text-decoration: none; }
+
+  @media print {
+    html { background: none; }
+    .page { margin: 0; box-shadow: none; }
+  }
+  @media screen and (max-width: 860px) {
+    .page { width: auto; height: auto; margin: 0; padding: 28px 16px; }
+    .bp { grid-template-columns: 26px 1fr; }
+    .bp-q { grid-column: 2; border-left: none; padding-left: 0; margin-top: 8px; }
+    .mapping { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; align-items: flex-start; }
+    .footer .links { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <div class="eyebrow">Work That Holds &nbsp;·&nbsp; Brandon Freitag</div>
+  <h1>The Five Breakpoints</h1>
+  <p class="sub">The five predictable failure patterns of large-scale change, and a question that detects each one before drift becomes expensive.</p>
+  <p class="lede">Organizations rarely fail to transform for lack of activity. More often, the initiative was never designed to withstand the pressures that large-scale change creates. The same five breakpoints appear in AI adoption and operating-model redesign alike, and each one is a visible sign that a force the change depends on has weakened.</p>
+
+  <div class="path" aria-hidden="true">
+    <svg viewBox="0 0 720 34" xmlns="http://www.w3.org/2000/svg" font-family="Source Sans 3, Helvetica Neue, Helvetica, Arial, sans-serif">
+      <line x1="58" y1="27" x2="666" y2="27" stroke="#8C6A15" stroke-width="2"/>
+      <text x="0" y="30.5" font-size="9.5" fill="#767B84" letter-spacing="1.4">LAUNCH</text>
+      <text x="720" y="30.5" font-size="9.5" fill="#767B84" letter-spacing="1.4" text-anchor="end">HOLDS</text>
+      <path d="M58 27 C 90 27, 100 12, 140 12 L 660 12" fill="none" stroke="#4A4F57" stroke-width="1.3" stroke-dasharray="0"/>
+      <g font-size="9.5" font-weight="700" text-anchor="middle" fill="#FBFAF7">
+        <circle cx="200" cy="12" r="8" fill="#8C6A15"/><text x="200" y="15.4">1</text>
+        <circle cx="310" cy="12" r="8" fill="#8C6A15"/><text x="310" y="15.4">2</text>
+        <circle cx="420" cy="12" r="8" fill="#8C6A15"/><text x="420" y="15.4">3</text>
+        <circle cx="530" cy="12" r="8" fill="#8C6A15"/><text x="530" y="15.4">4</text>
+        <circle cx="640" cy="12" r="8" fill="#8C6A15"/><text x="640" y="15.4">5</text>
+      </g>
+    </svg>
+  </div>
+
+  <section class="bps">
+    <div class="bp">
+      <div class="bp-num">1</div>
+      <div>
+        <div class="bp-head"><span class="bp-name">Strategic Disconnection</span><span class="force">Points to Purpose</span></div>
+        <p class="bp-looks">Leaders hear the same language repeated back and assume alignment, while each team fills in its own definition of success.</p>
+      </div>
+      <div class="bp-q"><span class="label">Detection question</span><p>If you asked ten leaders to describe the primary outcome of the initiative, would their answers match?</p></div>
+    </div>
+    <div class="bp">
+      <div class="bp-num">2</div>
+      <div>
+        <div class="bp-head"><span class="bp-name">Incentive Fragmentation</span><span class="force">Points to Commitment</span></div>
+        <p class="bp-looks">People attend the meetings, then go back to the priorities they are paid on.</p>
+      </div>
+      <div class="bp-q"><span class="label">Detection question</span><p>If the initiative succeeds but a leader&rsquo;s own metrics do not improve, will that leader still treat the work as a priority?</p></div>
+    </div>
+    <div class="bp">
+      <div class="bp-num">3</div>
+      <div>
+        <div class="bp-head"><span class="bp-name">Process Friction</span><span class="force">Points to Capability</span></div>
+        <p class="bp-looks">Teams are told to move faster through the same handoffs and approvals, and the strategy gets negotiated one handoff at a time.</p>
+      </div>
+      <div class="bp-q"><span class="label">Detection question</span><p>If you mapped how work flows today, would it look like the formal process or the workaround your teams built to survive it?</p></div>
+    </div>
+    <div class="bp">
+      <div class="bp-num">4</div>
+      <div>
+        <div class="bp-head"><span class="bp-name">The Technology Illusion</span><span class="force">Points to Capability</span></div>
+        <p class="bp-looks">The new tool is live, and the work still happens the old way around it.</p>
+      </div>
+      <div class="bp-q"><span class="label">Detection question</span><p>If you removed the technology tomorrow, would teams still agree on how the work should happen?</p></div>
+    </div>
+    <div class="bp">
+      <div class="bp-num">5</div>
+      <div>
+        <div class="bp-head"><span class="bp-name">Momentum Mirage</span><span class="force">Points to Momentum</span></div>
+        <p class="bp-looks">The steering committee meets less often while the status stays green, and people quietly return to local priorities.</p>
+      </div>
+      <div class="bp-q"><span class="label">Detection question</span><p>What would happen if you stopped actively managing this initiative for 90 days?</p></div>
+    </div>
+  </section>
+
+  <section class="mapping">
+    <div class="box">
+      <div class="eyebrow">The forces underneath</div>
+      <h2>Each breakpoint maps to a force.</h2>
+      <p>Strategic Disconnection usually points to weak Purpose, and Incentive Fragmentation exposes weak Commitment. Process Friction and the Technology Illusion both reveal Capability gaps. Momentum Mirage is what happens when reinforcement fades before the organization has shifted. The breakpoint tells you where the pain is surfacing, and the force explains what must change.</p>
+    </div>
+    <div class="box">
+      <div class="eyebrow">How to use the questions</div>
+      <h2>Ask the people doing the work.</h2>
+      <p>Put the five questions to the teams carrying the change as well as to the people running it, and compare the answers. A weak answer to any one shows where the initiative is likely to stall. A condition you can name is a condition you can fix, and the fix costs far less early than after the post-mortem.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div>
+      <div class="brand">Work That Holds</div>
+      <div class="src">From <em>The Five Breakpoints Leaders Miss in Transformation</em>, by Brandon Freitag</div>
+    </div>
+    <div class="links">
+      Read the essays at <strong><a href="https://www.workthatholds.com">workthatholds.com</a></strong><br>
+      Run the two-minute self-check at <strong><a href="https://worththatholds.com/self-check">worththatholds.com/self-check</a></strong>
+    </div>
+  </footer>
+
+</main>
+</body>
+</html>
