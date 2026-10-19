@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>It's Rarely the Technology · Brandon Freitag</title>
+<link rel="canonical" href="https://presentations.workthatholds.com/its-rarely-the-technology">
+<!-- Talk deck: "It's Rarely the Technology: Why AI Programs Stall Between
+     Pilot and Scale." One slide per [SLIDE] marker in the speaker draft
+     (worth-that-holds-business/notes/speaking/talk-1-its-rarely-the-technology.md).
+     Practice talk: ink navy accent, gold baseline (BRAND.md sections 3, 6, 7).
+     Arrow keys, space, Page Up/Down, Home/End, or the buttons to move. Prints one slide per page. -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --accent: #1F3A5F; --accent-tint: #EEF1F6; --accent-line: #C8D2E0;
+    --gold: #8C6A15;
+    --ink: #1A1C20; --ink-soft: #4A4F57; --muted: #767B84;
+    --paper: #FBFAF7; --surface: #FFFFFF; --border: #E4E1D8; --border-strong: #CFCABD;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  html { font-size: 18px; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--serif); overflow: hidden; height: 100vh; width: 100vw; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 6rem 8vw 6.5rem 8vw; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; background: var(--paper); }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .slide.dark { background: var(--ink); color: var(--paper); }
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--accent); transition: width 0.35s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 1.8rem; right: 2.5rem; font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.15em; color: var(--muted); z-index: 100; }
+  .nav { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100; }
+  .nav button { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 0.35rem 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-family: var(--sans); }
+  .nav button.on-dark { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.45); }
+  .nav button.on-dark:hover { border-color: rgba(255,255,255,0.8); color: rgba(255,255,255,0.9); }
+  .nav button:hover { border-color: var(--accent); color: var(--accent); }
+  .brandline { position: fixed; bottom: 1.8rem; left: 2.5rem; font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); z-index: 100; }
+  #back-link { position: fixed; top: 1.4rem; left: 2rem; font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; z-index: 100; transition: color 0.2s; }
+  #back-link:hover { color: var(--accent); }
+
+  /* Eyebrow with the gold baseline: the support spans exactly the text it sits under. */
+  .eyebrow { display: table; font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.4rem; font-weight: 600; }
+  .eyebrow::after { content: ''; display: block; width: 100%; height: 2px; border-radius: 1px; background: var(--gold); margin-top: 0.5rem; }
+  .slide.dark .eyebrow { color: rgba(255,255,255,0.5); }
+
+  h1 { font-family: var(--serif); font-size: clamp(2rem, 4.6vw, 3.6rem); font-weight: 600; line-height: 1.1; color: var(--ink); max-width: 22ch; margin-bottom: 1.2rem; letter-spacing: -0.01em; }
+  h1.beat { font-size: clamp(2.4rem, 6vw, 4.6rem); max-width: 18ch; margin-bottom: 0; }
+  h2 { font-family: var(--serif); font-size: clamp(1.4rem, 2.8vw, 2.2rem); font-weight: 600; line-height: 1.18; color: var(--ink); max-width: 30ch; margin-bottom: 1.1rem; }
+  .slide.dark h1, .slide.dark h2 { color: var(--paper); }
+  .lead { font-family: var(--sans); font-size: clamp(0.95rem, 1.6vw, 1.15rem); line-height: 1.6; color: var(--ink-soft); max-width: 62ch; margin-bottom: 1rem; }
+  .slide.dark .lead { color: rgba(255,255,255,0.8); }
+
+  /* Bordered cards on the paper ground: a serif term, then a sans sentence or two. */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; width: 100%; max-width: 1080px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.15rem; }
+  .card-term { font-family: var(--serif); font-weight: 600; font-size: 1.02rem; color: var(--ink); margin-bottom: 0.4rem; display: block; }
+  .card-body { font-family: var(--sans); font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5; }
+  .card-num { font-family: var(--sans); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 0.35rem; }
+  .note { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); line-height: 1.55; max-width: 70ch; margin-top: 1.2rem; }
+
+  /* The spread: one number per line, each with its source in small type. */
+  .spread { width: 100%; max-width: 1000px; border-top: 1px solid var(--border); }
+  .spread-row { display: grid; grid-template-columns: 10rem 1fr; gap: 1.4rem; align-items: baseline; padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+  .spread-num { font-family: var(--serif); font-weight: 600; font-size: 1.75rem; color: var(--accent); line-height: 1.1; white-space: nowrap; }
+  .spread-what { font-family: var(--sans); font-size: 0.92rem; color: var(--ink); line-height: 1.4; }
+  .source { display: block; font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.04em; color: var(--muted); margin-top: 0.15rem; }
+
+  /* Two boxes: the pilot and the organization, standing on the gold ground line. */
+  .boxes { display: grid; grid-template-columns: 1fr 1.6fr; gap: 1.4rem; width: 100%; max-width: 980px; align-items: end; padding-bottom: 0.9rem; border-bottom: 3px solid var(--gold); }
+  .box { border-radius: 6px; padding: 1rem 1.2rem; }
+  .box.pilot { background: var(--accent-tint); border: 2px solid var(--accent); }
+  .box.org { background: var(--surface); border: 2px solid var(--border-strong); }
+  .box-label { font-family: var(--sans); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--accent); margin-bottom: 0.6rem; }
+  .box.org .box-label { color: var(--ink-soft); }
+  .box ul { list-style: none; }
+  .box li { font-family: var(--sans); font-size: 0.86rem; color: var(--ink); line-height: 1.4; padding: 0.32rem 0; border-top: 1px solid var(--accent-line); }
+  .box.org li { border-top-color: var(--border); }
+  .box-state { font-family: var(--serif); font-size: 0.95rem; font-style: italic; color: var(--ink-soft); margin-top: 0.6rem; }
+
+  /* Quote */
+  .quote { font-family: var(--serif); font-size: clamp(2rem, 4.4vw, 3.4rem); font-weight: 600; line-height: 1.15; color: var(--ink); max-width: 22ch; }
+  .quote .open { color: var(--accent); }
+
+  /* The path with breakpoints */
+  .path { width: 100%; max-width: 1080px; height: auto; display: block; margin-top: 0.4rem; }
+
+  /* Question slides */
+  .question { border-left: 3px solid var(--accent); padding: 0.4rem 0 0.4rem 1.6rem; max-width: 1000px; }
+  .question p { max-width: 34ch; }
+  .question p { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.35rem); font-weight: 600; line-height: 1.22; color: var(--ink); }
+  .question-label { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 0.8rem; }
+
+  /* The five questions together */
+  .qlist { width: 100%; max-width: 1040px; display: grid; gap: 0.5rem; }
+  .qrow { display: grid; grid-template-columns: 2rem 12.5rem 1fr; gap: 1rem; align-items: baseline; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 1rem; }
+  .qrow .n { font-family: var(--serif); font-weight: 600; color: var(--accent); font-size: 1.05rem; }
+  .qrow .bp { font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .qrow .q { font-family: var(--serif); font-size: 1.02rem; color: var(--ink); line-height: 1.35; }
+
+  /* Closing contact */
+  .contact { display: grid; gap: 0.2rem; margin-top: 0.4rem; }
+  .contact-row { display: grid; grid-template-columns: 9rem 1fr; gap: 1.2rem; align-items: baseline; padding: 0.7rem 0; border-bottom: 1px solid var(--border); min-width: min(720px, 80vw); }
+  .contact-label { font-family: var(--sans); font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .contact-value { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; color: var(--accent); }
+  .contact-value a { color: inherit; text-decoration: none; }
+  .contact-note { display: block; font-family: var(--sans); font-size: 0.8rem; font-weight: 400; color: var(--ink-soft); margin-top: 0.2rem; }
+
+  @media (max-width: 900px) {
+    body { overflow: hidden; }
+    .slide { padding: 14vw 6vw 16vw 6vw; justify-content: flex-start; overflow-y: auto; }
+    h1 { font-size: clamp(1.6rem, 7vw, 2.5rem); }
+    h1.beat { font-size: clamp(2rem, 9vw, 3rem); }
+    h2 { font-size: clamp(1.2rem, 5.5vw, 1.7rem); }
+    .quote { font-size: clamp(1.6rem, 7vw, 2.4rem); }
+    .grid-4, .boxes { grid-template-columns: 1fr; }
+    .spread-row { grid-template-columns: 1fr; gap: 0.2rem; }
+    .qrow { grid-template-columns: 1.5rem 1fr; }
+    .qrow .bp { grid-column: 2; }
+    .qrow .q { grid-column: 2; }
+    .contact-row { grid-template-columns: 1fr; min-width: 0; gap: 0.2rem; }
+    .brandline { display: none; }
+    #back-link { font-size: 0.55rem; top: 1rem; left: 1.2rem; }
+    .counter { bottom: 1.2rem; right: 1.2rem; }
+    .nav { bottom: 1rem; }
+  }
+
+  @page { size: 1280px 720px; margin: 0; }
+  @media print {
+    html, body { overflow: visible; height: auto; width: auto; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .deck { height: auto; width: auto; }
+    .slide { position: relative; inset: auto; width: 1280px; height: 720px; opacity: 1; transition: none; break-after: page; page-break-after: always; overflow: hidden; }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .nav, .counter, .progress, #back-link { display: none; }
+    .brandline { position: absolute; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
+</head>
+<body>
+<a id="back-link" href="/">&larr; All presentations</a>
+<div class="deck" id="deck">
+
+  <!-- 1 · Cold open -->
+  <div class="slide dark active">
+    <h1 class="beat">The pilot worked.</h1>
+  </div>
+
+  <!-- 2 · The wrong conversation -->
+  <div class="slide">
+    <div class="eyebrow">Where the conversation goes</div>
+    <h1 class="beat">Model. Platform. Agents. Build or buy.</h1>
+  </div>
+
+  <!-- 3 · The spread -->
+  <div class="slide">
+    <div class="eyebrow">Where programs fail</div>
+    <h2>What the evidence says</h2>
+    <div class="spread">
+      <div class="spread-row"><div class="spread-num">Under 25%</div><div class="spread-what">of organizational redesigns succeeded when they followed few of the basic design rules.<span class="source">Source: McKinsey, research on organizational redesign</span></div></div>
+      <div class="spread-row"><div class="spread-num">86%</div><div class="spread-what">succeeded when they followed all of them.<span class="source">Source: McKinsey, research on organizational redesign</span></div></div>
+      <div class="spread-row"><div class="spread-num">8.5%</div><div class="spread-what">of more than 16,000 major projects came in on time and on budget.<span class="source">Source: Bent Flyvbjerg and Dan Gardner, How Big Things Get Done</span></div></div>
+      <div class="spread-row"><div class="spread-num">0.5%</div><div class="spread-what">came in on time, on budget, and with the promised benefits.<span class="source">Source: Bent Flyvbjerg and Dan Gardner, How Big Things Get Done</span></div></div>
+      <div class="spread-row"><div class="spread-num">Most</div><div class="spread-what">companies now deploy AI somewhere, and most of those report no material effect on the bottom line yet.<span class="source">Source: McKinsey, The State of AI</span></div></div>
+    </div>
+  </div>
+
+  <!-- 4 · Why the pilot worked -->
+  <div class="slide">
+    <div class="eyebrow">Why the pilot worked</div>
+    <h2>A pilot switches the usual conditions off. Scale switches them back on.</h2>
+    <div class="boxes">
+      <div class="box pilot">
+        <div class="box-label">The pilot</div>
+        <ul>
+          <li>A hand-picked team</li>
+          <li>A sponsor paying close attention</li>
+          <li>Permission to work around approvals</li>
+          <li>People measured on the pilot succeeding</li>
+        </ul>
+        <div class="box-state">A protected space</div>
+      </div>
+      <div class="box org">
+        <div class="box-label">The organization</div>
+        <ul>
+          <li>Its incentives</li>
+          <li>Its handoffs</li>
+          <li>Its approval chains</li>
+          <li>Its unspoken disagreements about what success means</li>
+        </ul>
+        <div class="box-state">The conditions the program inherits at scale</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 · The line from the essays -->
+  <div class="slide">
+    <div class="eyebrow">From the Work That Holds essays</div>
+    <p class="quote">AI won&rsquo;t save a broken organization. It will break it faster.</p>
+  </div>
+
+  <!-- 6 · The five breakpoints, named -->
+  <div class="slide">
+    <div class="eyebrow">The five breakpoints</div>
+    <h2>Five places an AI program breaks between pilot and scale</h2>
+    <p class="lead">Each one shows up early, and each one has a question that detects it.</p>
+    <svg class="path" viewBox="0 0 1080 190" role="img" aria-label="A path from launch to holds with five numbered breakpoints: Strategic Disconnection, Incentive Fragmentation, Process Friction, the Technology Illusion, Momentum Mirage">
+      <line x1="40" y1="70" x2="1040" y2="70" stroke="#8C6A15" stroke-width="3" stroke-linecap="round"/>
+      <g font-family="'Source Sans 3','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="13" font-weight="600" fill="#767B84" letter-spacing="2">
+        <text x="40" y="40">LAUNCH</text>
+        <text x="1040" y="40" text-anchor="end">HOLDS</text>
+      </g>
+      <circle cx="40" cy="70" r="6" fill="#1F3A5F"/>
+      <circle cx="1040" cy="70" r="6" fill="#1F3A5F"/>
+      <g fill="#FBFAF7" stroke="#1F3A5F" stroke-width="2.5">
+        <circle cx="200" cy="70" r="20"/><circle cx="370" cy="70" r="20"/><circle cx="540" cy="70" r="20"/><circle cx="710" cy="70" r="20"/><circle cx="880" cy="70" r="20"/>
+      </g>
+      <g font-family="'Source Serif 4',Georgia,serif" font-size="19" font-weight="600" fill="#1F3A5F" text-anchor="middle">
+        <text x="200" y="77">1</text><text x="370" y="77">2</text><text x="540" y="77">3</text><text x="710" y="77">4</text><text x="880" y="77">5</text>
+      </g>
+      <g font-family="'Source Serif 4',Georgia,serif" font-size="18" font-weight="600" fill="#1A1C20" text-anchor="middle">
+        <text x="200" y="124">Strategic</text><text x="200" y="148">Disconnection</text>
+        <text x="370" y="124">Incentive</text><text x="370" y="148">Fragmentation</text>
+        <text x="540" y="124">Process</text><text x="540" y="148">Friction</text>
+        <text x="710" y="124">The Technology</text><text x="710" y="148">Illusion</text>
+        <text x="880" y="124">Momentum</text><text x="880" y="148">Mirage</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 7 · Breakpoint 1 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 1 &middot; Strategic Disconnection</div>
+    <h1>Ten leaders. Ten definitions of success.</h1>
+  </div>
+
+  <!-- 8 · Question 1 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 1 &middot; The question</div>
+    <div class="question">
+      <div class="question-label">The question that detects it</div>
+      <p>If you asked ten leaders to describe the primary outcome of this program, separately, in one sentence, would their answers match?</p>
+    </div>
+  </div>
+
+  <!-- 9 · Breakpoint 2 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 2 &middot; Incentive Fragmentation</div>
+    <h1>Attendance is not buy-in.</h1>
+  </div>
+
+  <!-- 10 · Question 2 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 2 &middot; The question</div>
+    <div class="question">
+      <div class="question-label">The question that detects it</div>
+      <p>If this program succeeds but a given leader&rsquo;s own metrics do not improve, will that leader still treat it as a priority when it competes with their targets?</p>
+    </div>
+  </div>
+
+  <!-- 11 · Breakpoint 3 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 3 &middot; Process Friction</div>
+    <h1>Faster inside a system built to prevent speed.</h1>
+  </div>
+
+  <!-- 12 · Question 3 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 3 &middot; The question</div>
+    <div class="question">
+      <div class="question-label">The question that detects it</div>
+      <p>If you mapped how this work really flows today, would the map look like the formal process, or like the workaround your teams built to survive it?</p>
+    </div>
+  </div>
+
+  <!-- 13 · Breakpoint 4 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 4 &middot; The Technology Illusion</div>
+    <h1>The tool is live. The work happens the old way around it.</h1>
+  </div>
+
+  <!-- 14 · Question 4 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 4 &middot; The question</div>
+    <div class="question">
+      <div class="question-label">The question that detects it</div>
+      <p>If you removed the technology tomorrow, would your teams still agree on how the work should happen?</p>
+    </div>
+  </div>
+
+  <!-- 15 · Breakpoint 5 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 5 &middot; Momentum Mirage</div>
+    <h1>The status is green. The steering committee meets less often.</h1>
+  </div>
+
+  <!-- 16 · Question 5 -->
+  <div class="slide">
+    <div class="eyebrow">Breakpoint 5 &middot; The question</div>
+    <div class="question">
+      <div class="question-label">The question that detects it</div>
+      <p>What would happen to this program if you stopped actively managing it for ninety days?</p>
+    </div>
+  </div>
+
+  <!-- 17 · The stewardship gap -->
+  <div class="slide">
+    <div class="eyebrow">The stewardship gap</div>
+    <h1>Sponsors launch change. Stewards keep it alive.</h1>
+  </div>
+
+  <!-- 18 · The four stewardship functions -->
+  <div class="slide">
+    <div class="eyebrow">Closing the gap</div>
+    <h2>Four stewardship functions to staff</h2>
+    <div class="grid-4">
+      <div class="card"><span class="card-term">Interpretation</span><div class="card-body">Translates the enterprise outcome into what success means for each team.</div></div>
+      <div class="card"><span class="card-term">Ownership</span><div class="card-body">Keeps the priority alive under pressure.</div></div>
+      <div class="card"><span class="card-term">Architecture</span><div class="card-body">Covers the seams between functions, where most failures happen.</div></div>
+      <div class="card"><span class="card-term">Reinforcement</span><div class="card-body">Watches for drift, with the authority to intervene before the old way comes back.</div></div>
+    </div>
+    <p class="note">It can be one person or four. Each function needs a name next to it, objectives that measure the sustained result instead of the launch, and the authority to act.</p>
+  </div>
+
+  <!-- 19 · The five questions together -->
+  <div class="slide">
+    <div class="eyebrow">Before the next tranche</div>
+    <h2>Ask the five questions of the people doing the work.</h2>
+    <div class="qlist">
+      <div class="qrow"><span class="n">1</span><span class="bp">Strategic Disconnection</span><span class="q">Would ten leaders describe the outcome the same way?</span></div>
+      <div class="qrow"><span class="n">2</span><span class="bp">Incentive Fragmentation</span><span class="q">Will the incentives survive the first real conflict between this program and someone&rsquo;s own targets?</span></div>
+      <div class="qrow"><span class="n">3</span><span class="bp">Process Friction</span><span class="q">Does the work flow the way the process says, or the way the workaround says?</span></div>
+      <div class="qrow"><span class="n">4</span><span class="bp">The Technology Illusion</span><span class="q">If the tool disappeared, would anyone still agree on how the work should happen?</span></div>
+      <div class="qrow"><span class="n">5</span><span class="bp">Momentum Mirage</span><span class="q">What happens if nobody manages this for ninety days?</span></div>
+    </div>
+  </div>
+
+  <!-- 20 · Close -->
+  <div class="slide">
+    <h1 class="beat">The pilot worked.</h1>
+  </div>
+
+  <!-- 21 · Contact -->
+  <div class="slide">
+    <div class="eyebrow">Thank you</div>
+    <h2>Brandon Freitag</h2>
+    <div class="contact">
+      <div class="contact-row"><span class="contact-label">The five questions</span><span class="contact-value"><a href="https://worththatholds.com/self-check">worththatholds.com/self-check</a><span class="contact-note">A two-minute self-check. Your answers stay in your browser.</span></span></div>
+      <div class="contact-row"><span class="contact-label">LinkedIn</span><span class="contact-value"><a href="https://www.linkedin.com/in/brfreitag">linkedin.com/in/brfreitag</a></span></div>
+    </div>
+  </div>
+
+</div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 21</div>
+<div class="nav"><button onclick="go(-1)" aria-label="Previous slide">&larr;</button><button onclick="go(1)" aria-label="Next slide">&rarr;</button></div>
+<div class="brandline">Worth That Holds &middot; Designed to Hold</div>
+<script>
+  const slides = document.querySelectorAll('.slide'), total = slides.length; let cur = 0;
+  function show(n) { slides[cur].classList.remove('active'); cur = Math.max(0, Math.min(total - 1, n)); slides[cur].classList.add('active'); document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%'; document.getElementById('counter').textContent = (cur + 1) + ' / ' + total; updateChrome(); }
+  function go(d) { show(cur + d); }
+  function updateChrome() { var isDark = slides[cur].classList.contains('dark'); document.getElementById('back-link').style.color = isDark ? 'rgba(255,255,255,0.4)' : ''; document.querySelector('.brandline').style.color = isDark ? 'rgba(255,255,255,0.4)' : ''; document.querySelectorAll('.nav button').forEach(function (btn) { btn.classList.toggle('on-dark', isDark); }); }
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); go(1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(total - 1);
+  });
+  let tx = 0; document.addEventListener('touchstart', e => tx = e.touches[0].clientX); document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 40) go(dx > 0 ? 1 : -1); });
+  show(0);
+</script>
+</body>
+</html>
